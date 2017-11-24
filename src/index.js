@@ -151,7 +151,8 @@ type State = {
   index: number,
   dir: 'x' | 'y',
   width: number,
-  height: number
+  height: number,
+  isScrolling: boolean
 }
 
 // missing `module.exports = exports['default'];` with babel6
@@ -202,7 +203,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   scrollView: ?React$ElementRef<ScrollView | ViewPagerAndroid>
 
   internals: {
-    isScrolling: boolean,
     offset: Object
   }
 
@@ -261,16 +261,12 @@ export default class ReactNativeSwiper extends Component<Props, State> {
         : this.state && this.state.width ? this.state.width : width,
       height: props.height
         ? props.height
-        : this.state && this.state.height ? this.state.height : height
+        : this.state && this.state.height ? this.state.height : height,
+      isScrolling: false
     }
 
     initState.offset[initState.dir] =
       initState.dir === 'y' ? height * props.index : width * props.index
-
-    this.internals = {
-      ...this.internals,
-      isScrolling: false
-    }
 
     return initState
   }
@@ -337,7 +333,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     if (
       !Array.isArray(this.props.children) ||
       !this.props.autoplay ||
-      this.internals.isScrolling ||
+      this.state.isScrolling ||
       this.state.autoplayEnd
     )
       return
@@ -361,8 +357,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    * @param  {object} e native event
    */
   onScrollBegin = (e: Event) => {
-    // update scroll state
-    this.internals.isScrolling = true
+    this.setState({ isScrolling: true })
 
     if (this.props.onScrollBeginDrag) {
       this.props.onScrollBeginDrag(e, this.fullState(), this)
@@ -375,7 +370,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    */
   onScrollEnd = (e: Event) => {
     // update scroll state
-    this.internals.isScrolling = false
+    this.setState({ isScrolling: false })
 
     const { contentOffset, position } = e.nativeEvent
     const { dir, width, height } = this.state
@@ -412,7 +407,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       previousOffset === newOffset &&
       (index === 0 || index === Children.toArray(children).length - 1)
     ) {
-      this.internals.isScrolling = false
+      this.setState({ isScrolling: false })
     }
   }
 
@@ -481,7 +476,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    */
 
   scrollBy = (index: number, animated: boolean = true) => {
-    if (this.internals.isScrolling || this.state.total < 2) return
+    if (this.state.isScrolling || this.state.total < 2) return
 
     const { scrollView } = this
     const { dir, width, height } = this.state
@@ -500,9 +495,8 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       }
     }
 
-    // update scroll state
-    this.internals.isScrolling = true
     this.setState({
+      isScrolling: true,
       autoplayEnd: false
     })
 
