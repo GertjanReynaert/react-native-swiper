@@ -18,10 +18,6 @@ import {
 import type { Event } from 'react-native'
 import type { StyleObj } from 'react-native/Libraries/StyleSheet/StyleSheetTypes'
 
-/**
- * Default styles
- * @type {StyleSheetPropType}
- */
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'transparent',
@@ -197,6 +193,12 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   loopJumpTimer: ?number
   loopJumpTimer = null
 
+  scrollView: ?{
+    scrollTo: ({ x: number, y: number, animated: boolean }) => void,
+    setPage: (diff: number) => void,
+    setPageWithoutAnimation: (diff: number) => void
+  }
+
   componentWillReceiveProps(nextProps: Props) {
     if (!nextProps.autoplay && this.autoplayTimer) {
       clearTimeout(this.autoplayTimer)
@@ -295,7 +297,9 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     // to emulate offset.
     if (Platform.OS === 'ios') {
       if (this.initialRender && this.state.total > 1) {
-        this.scrollView.scrollTo({ ...offset, animated: false })
+        if (this.scrollView) {
+          this.scrollView.scrollTo({ ...offset, animated: false })
+        }
         this.initialRender = false
       }
     }
@@ -308,7 +312,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     const i = this.state.index + (this.props.loop ? 1 : 0)
 
     this.loopJumpTimer = setTimeout(() => {
-      if (this.scrollView.setPageWithoutAnimation) {
+      if (this.scrollView && this.scrollView.setPageWithoutAnimation) {
         this.scrollView.setPageWithoutAnimation(i)
       }
     }, 50)
