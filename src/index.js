@@ -263,7 +263,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
   // include internals with state
   fullState() {
-    return Object.assign({}, this.state, this.internals)
+    return { ...this.state, ...this.internals }
   }
 
   onLayout = (event: Event) => {
@@ -503,9 +503,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   }
 
   scrollViewPropOverrides = () => {
-    const props = this.props
     let overrides = {}
-
     /*
     const scrollResponders = [
       'onMomentumScrollBegin',
@@ -516,18 +514,19 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     ]
     */
 
-    for (let prop in props) {
+    const scrollResponders = [
+      'onMomentumScrollEnd',
+      'renderPagination',
+      'onScrollBeginDrag'
+    ]
+
+    Object.keys(this.props).forEach(propName => {
+      const prop = this.props[propName]
       // if(~scrollResponders.indexOf(prop)
-      if (
-        typeof props[prop] === 'function' &&
-        prop !== 'onMomentumScrollEnd' &&
-        prop !== 'renderPagination' &&
-        prop !== 'onScrollBeginDrag'
-      ) {
-        let originResponder = props[prop]
-        overrides[prop] = e => originResponder(e, this.fullState(), this)
+      if (typeof prop === 'function' && !scrollResponders.includes(propName)) {
+        overrides[propName] = e => prop(e, this.fullState(), this)
       }
-    }
+    })
 
     return overrides
   }
@@ -653,15 +652,15 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     )
   }
 
-  refScrollView = view => {
-    this.scrollView = view
+  setScrollViewRef = (scrollView: Object | null) => {
+    this.scrollView = scrollView
   }
 
-  renderScrollView = pages => {
+  renderScrollView = (pages: Array<any>) => {
     if (Platform.OS === 'ios') {
       return (
         <ScrollView
-          ref={this.refScrollView}
+          ref={this.setScrollViewRef}
           {...this.props}
           {...this.scrollViewPropOverrides()}
           contentContainerStyle={[styles.wrapperIOS, this.props.style]}
@@ -677,7 +676,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     }
     return (
       <ViewPagerAndroid
-        ref={this.refScrollView}
+        ref={this.setScrollViewRef}
         {...this.props}
         initialPage={this.props.loop ? this.state.index + 1 : this.state.index}
         onPageSelected={this.onScrollEnd}
@@ -766,12 +765,16 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     return (
       <View style={[styles.container, containerStyle]} onLayout={this.onLayout}>
         {this.renderScrollView(pages)}
-        {showsPagination &&
-          (renderPagination
+
+        {showsPagination
+          ? renderPagination
             ? renderPagination(index, total, this)
-            : this.renderPagination())}
+            : this.renderPagination()
+          : null}
+
         {this.renderTitle()}
-        {showsButtons && this.renderButtons()}
+
+        {showsButtons ? this.renderButtons() : null}
       </View>
     )
   }
