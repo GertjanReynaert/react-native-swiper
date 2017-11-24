@@ -1,9 +1,9 @@
+// @flow
 /**
  * react-native-swiper
  * @author leecade<leecade@163.com>
  */
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import {
   Text,
   View,
@@ -12,14 +12,16 @@ import {
   TouchableOpacity,
   ViewPagerAndroid,
   Platform,
-  ActivityIndicator
+  ActivityIndicator,
+  StyleSheet
 } from 'react-native'
+import type { StyleObj } from 'react-native/Libraries/StyleSheet/StyleSheetTypes'
 
 /**
  * Default styles
  * @type {StyleSheetPropType}
  */
-const styles = {
+const styles = StyleSheet.create({
   container: {
     backgroundColor: 'transparent',
     position: 'relative',
@@ -93,61 +95,65 @@ const styles = {
     color: '#007aff',
     fontFamily: 'Arial'
   }
+})
+
+type Props = {
+  horizontal: boolean,
+  children?: any,
+  containerStyle?: StyleObj,
+  style?: StyleObj,
+  scrollViewStyle?: StyleObj,
+  pagingEnabled: boolean,
+  showsHorizontalScrollIndicator: boolean,
+  showsVerticalScrollIndicator: boolean,
+  bounces: boolean,
+  scrollsToTop: boolean,
+  removeClippedSubviews: boolean,
+  automaticallyAdjustContentInsets: boolean,
+  showsPagination: boolean,
+  showsButtons: boolean,
+  disableNextButton: boolean,
+  loadMinimal: boolean,
+  loadMinimalSize: number,
+  loadMinimalLoader?: any, // element
+  loop: boolean,
+  autoplay: boolean,
+  autoplayTimeout: number,
+  autoplayDirection: boolean,
+  index: number,
+  renderPagination?: () => void,
+  dotStyle?: StyleObj,
+  activeDotStyle?: StyleObj,
+  dotColor?: string,
+  activeDotColor?: string,
+  /**
+   * Called when the index has changed because the user swiped.
+   */
+  onIndexChanged: (index: number) => void,
+  onScrollBeginDrag?: () => void,
+  onMomentumScrollEnd?: () => void,
+  activeDot?: any, // element
+  dot?: any, // element
+  paginationStyle?: StyleObj,
+  nextButton?: any, // element
+  prevButton?: any, // element
+  buttonWrapperStyle?: StyleObj
+}
+
+type State = {
+  autoplayEnd: boolean,
+  loopJump: boolean,
+  offset: Object,
+  total: number,
+  index: number,
+  dir: 'x' | 'y',
+  width: number,
+  height: number
 }
 
 // missing `module.exports = exports['default'];` with babel6
 // export default React.createClass({
-export default class extends Component {
-  /**
-   * Props Validation
-   * @type {Object}
-   */
-  static propTypes = {
-    horizontal: PropTypes.bool,
-    children: PropTypes.node.isRequired,
-    containerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
-    style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
-    scrollViewStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
-    pagingEnabled: PropTypes.bool,
-    showsHorizontalScrollIndicator: PropTypes.bool,
-    showsVerticalScrollIndicator: PropTypes.bool,
-    bounces: PropTypes.bool,
-    scrollsToTop: PropTypes.bool,
-    removeClippedSubviews: PropTypes.bool,
-    automaticallyAdjustContentInsets: PropTypes.bool,
-    showsPagination: PropTypes.bool,
-    showsButtons: PropTypes.bool,
-    disableNextButton: PropTypes.bool,
-    loadMinimal: PropTypes.bool,
-    loadMinimalSize: PropTypes.number,
-    loadMinimalLoader: PropTypes.element,
-    loop: PropTypes.bool,
-    autoplay: PropTypes.bool,
-    autoplayTimeout: PropTypes.number,
-    autoplayDirection: PropTypes.bool,
-    index: PropTypes.number,
-    renderPagination: PropTypes.func,
-    dotStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
-    activeDotStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
-    dotColor: PropTypes.string,
-    activeDotColor: PropTypes.string,
-    /**
-     * Called when the index has changed because the user swiped.
-     */
-    onIndexChanged: PropTypes.func,
-    onScrollBeginDrag: PropTypes.func,
-    onMomentumScrollEnd: PropTypes.func,
-    activeDot: PropTypes.element,
-    dot: PropTypes.element,
-    paginationStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
-    nextButton: PropTypes.element,
-    prevButton: PropTypes.element,
-    buttonWrapperStyle: PropTypes.oneOfType([
-      PropTypes.object,
-      PropTypes.number
-    ])
-  }
-
+export default class ReactNativeSwiper extends Component<Props, State> {
   /**
    * Default props
    * @return {object} props
@@ -172,14 +178,14 @@ export default class extends Component {
     autoplayTimeout: 2.5,
     autoplayDirection: true,
     index: 0,
-    onIndexChanged: () => null
+    onIndexChanged: () => {}
   }
 
   /**
    * Init states
    * @return {object} states
    */
-  state = this.initState(this.props)
+  state = this.getInitialState(this.props)
 
   /**
    * Initial render flag
@@ -194,11 +200,13 @@ export default class extends Component {
   autoplayTimer = null
   loopJumpTimer = null
 
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.autoplay && this.autoplayTimer)
+  componentWillReceiveProps(nextProps: Props) {
+    if (!nextProps.autoplay && this.autoplayTimer) {
       clearTimeout(this.autoplayTimer)
+    }
+
     this.setState(
-      this.initState(nextProps, this.props.index !== nextProps.index)
+      this.getInitialState(nextProps, this.props.index !== nextProps.index)
     )
   }
 
@@ -211,51 +219,38 @@ export default class extends Component {
     this.loopJumpTimer && clearTimeout(this.loopJumpTimer)
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate(nextProps: Props, nextState: State) {
     // If the index has changed, we notify the parent via the onIndexChanged callback
     if (this.state.index !== nextState.index)
       this.props.onIndexChanged(nextState.index)
   }
 
-  initState(props, updateIndex = false) {
+  getInitialState(props: Props, updateIndex: boolean = false) {
+    const { width, height } = Dimensions.get('window')
     // set the current state
     const state = this.state || { width: 0, height: 0, offset: { x: 0, y: 0 } }
+
+    const total = props.children ? props.children.length || 1 : 0
+
+    // Default horizontal
+    const dir = props.horizontal === false ? 'y' : 'x'
 
     const initState = {
       autoplayEnd: false,
       loopJump: false,
-      offset: {}
-    }
-
-    initState.total = props.children ? props.children.length || 1 : 0
-
-    if (state.total === initState.total && !updateIndex) {
-      // retain the index
-      initState.index = state.index
-    } else {
-      initState.index =
-        initState.total > 1 ? Math.min(props.index, initState.total - 1) : 0
-    }
-
-    // Default: horizontal
-    const { width, height } = Dimensions.get('window')
-
-    initState.dir = props.horizontal === false ? 'y' : 'x'
-
-    if (props.width) {
-      initState.width = props.width
-    } else if (this.state && this.state.width) {
-      initState.width = this.state.width
-    } else {
-      initState.width = width
-    }
-
-    if (props.height) {
-      initState.height = props.height
-    } else if (this.state && this.state.height) {
-      initState.height = this.state.height
-    } else {
-      initState.height = height
+      offset: {},
+      total,
+      index:
+        state.total === total && !updateIndex
+          ? state.index
+          : total > 1 ? Math.min(props.index, total - 1) : 0,
+      dir,
+      width: props.width
+        ? props.width
+        : this.state && this.state.width ? this.state.width : width,
+      height: props.height
+        ? props.height
+        : this.state && this.state.height ? this.state.height : height
     }
 
     initState.offset[initState.dir] =
@@ -265,6 +260,7 @@ export default class extends Component {
       ...this.internals,
       isScrolling: false
     }
+
     return initState
   }
 
@@ -476,7 +472,7 @@ export default class extends Component {
    * @param  {bool} animated
    */
 
-  scrollBy = (index, animated = true) => {
+  scrollBy = (index: number, animated: boolean = true) => {
     if (this.internals.isScrolling || this.state.total < 2) return
     const state = this.state
     const diff = (this.props.loop ? 1 : 0) + index + this.state.index
