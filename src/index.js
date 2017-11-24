@@ -199,6 +199,11 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     setPageWithoutAnimation: (diff: number) => void
   }
 
+  internals: {
+    isScrolling: boolean,
+    offset: Object
+  }
+
   componentWillReceiveProps(nextProps: Props) {
     if (!nextProps.autoplay && this.autoplayTimer) {
       clearTimeout(this.autoplayTimer)
