@@ -306,13 +306,12 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   loopJump = () => {
     if (!this.state.loopJump) return
     const i = this.state.index + (this.props.loop ? 1 : 0)
-    const scrollView = this.scrollView
-    this.loopJumpTimer = setTimeout(
-      () =>
-        scrollView.setPageWithoutAnimation &&
-        scrollView.setPageWithoutAnimation(i),
-      50
-    )
+
+    this.loopJumpTimer = setTimeout(() => {
+      if (this.scrollView.setPageWithoutAnimation) {
+        this.scrollView.setPageWithoutAnimation(i)
+      }
+    }, 50)
   }
 
   /**
@@ -348,8 +347,10 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   onScrollBegin = (e: Event) => {
     // update scroll state
     this.internals.isScrolling = true
-    this.props.onScrollBeginDrag &&
+
+    if (this.props.onScrollBeginDrag) {
       this.props.onScrollBeginDrag(e, this.fullState(), this)
+    }
   }
 
   /**
@@ -393,7 +394,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
     if (
       previousOffset === newOffset &&
-      (index === 0 || index === children.length - 1)
+      (index === 0 || index === Children.toArray(children).length - 1)
     ) {
       this.internals.isScrolling = false
     }
@@ -404,7 +405,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    * @param  {object} offset content offset
    * @param  {string} dir    'x' || 'y'
    */
-  updateIndex = (offset, dir, cb) => {
+  updateIndex = (offset: Object, dir: 'x' | 'y', cb: () => void) => {
     const state = this.state
     let index = state.index
     const diff = offset[dir] - this.internals.offset[dir]
@@ -466,17 +467,20 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   scrollBy = (index: number, animated: boolean = true) => {
     if (this.internals.isScrolling || this.state.total < 2) return
 
+    const { scrollView } = this
     const { dir, width, height } = this.state
     const diff = (this.props.loop ? 1 : 0) + index + this.state.index
 
     const x = dir === 'x' ? diff * width : 0
     const y = dir === 'y' ? diff * height : 0
 
-    if (this.scrollView) {
-      if (Platform.OS !== 'ios') {
-        this.scrollView[animated ? 'setPage' : 'setPageWithoutAnimation'](diff)
+    if (scrollView) {
+      if (Platform.OS === 'ios') {
+        scrollView.scrollTo({ x, y, animated })
+      } else if (animated) {
+        scrollView.setPage(diff)
       } else {
-        this.scrollView.scrollTo({ x, y, animated })
+        scrollView.setPageWithoutAnimation(diff)
       }
     }
 
