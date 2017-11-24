@@ -3,7 +3,7 @@
  * react-native-swiper
  * @author leecade<leecade@163.com>
  */
-import React, { Component } from 'react'
+import React, { Component, Children } from 'react'
 import {
   Text,
   View,
@@ -188,17 +188,13 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    */
   state = this.getInitialState(this.props)
 
-  /**
-   * Initial render flag
-   * @type {bool}
-   */
+  initialRender: boolean
   initialRender = true
 
-  /**
-   * autoplay timer
-   * @type {null}
-   */
+  autoplayTimer: ?number
   autoplayTimer = null
+
+  loopJumpTimer: ?number
   loopJumpTimer = null
 
   componentWillReceiveProps(nextProps: Props) {
@@ -413,7 +409,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     let index = state.index
     const diff = offset[dir] - this.internals.offset[dir]
     const step = dir === 'x' ? state.width : state.height
-    let loopJump = false
 
     // Do nothing if offset no change.
     if (!diff) return
@@ -427,22 +422,21 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       if (index <= -1) {
         index = state.total - 1
         offset[dir] = step * state.total
-        loopJump = true
       } else if (index >= state.total) {
         index = 0
         offset[dir] = step
-        loopJump = true
       }
     }
 
-    const newState = {}
-    newState.index = index
-    newState.loopJump = loopJump
+    const newState = {
+      index,
+      loopJump: this.props.loop
+    }
 
     this.internals.offset = offset
 
     // only update offset in state if loopJump is true
-    if (loopJump) {
+    if (this.props.loop) {
       // when swiping to the beginning of a looping set for the third time,
       // the new offset will be the same as the last one set in state.
       // Setting the offset to the same thing will not do anything,
@@ -471,18 +465,19 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
   scrollBy = (index: number, animated: boolean = true) => {
     if (this.internals.isScrolling || this.state.total < 2) return
-    const state = this.state
-    const diff = (this.props.loop ? 1 : 0) + index + this.state.index
-    let x = 0
-    let y = 0
-    if (state.dir === 'x') x = diff * state.width
-    if (state.dir === 'y') y = diff * state.height
 
-    if (Platform.OS !== 'ios') {
-      this.scrollView &&
+    const { dir, width, height } = this.state
+    const diff = (this.props.loop ? 1 : 0) + index + this.state.index
+
+    const x = dir === 'x' ? diff * width : 0
+    const y = dir === 'y' ? diff * height : 0
+
+    if (this.scrollView) {
+      if (Platform.OS !== 'ios') {
         this.scrollView[animated ? 'setPage' : 'setPageWithoutAnimation'](diff)
-    } else {
-      this.scrollView && this.scrollView.scrollTo({ x, y, animated })
+      } else {
+        this.scrollView.scrollTo({ x, y, animated })
+      }
     }
 
     // update scroll state
@@ -598,13 +593,10 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   }
 
   renderTitle = () => {
-    const child = this.props.children[this.state.index]
+    const child = Children.toArray(this.props.children)[this.state.index]
     const title = child && child.props && child.props.title
-    return title ? (
-      <View style={styles.title}>
-        {this.props.children[this.state.index].props.title}
-      </View>
-    ) : null
+
+    return title ? <View style={styles.title}>{title}</View> : null
   }
 
   renderNextButton = () => {
