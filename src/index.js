@@ -456,7 +456,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
         newState.offset = { x: 0, y: 0 }
         newState.offset[dir] = offset[dir] + 1
         this.setState(newState, () => {
-          this.setState({ offset: offset }, cb)
+          this.setState({ offset }, cb)
         })
       } else {
         newState.offset = offset
