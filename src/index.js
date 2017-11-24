@@ -118,7 +118,11 @@ type Props = {
   autoplayTimeout: number,
   autoplayDirection: boolean,
   index: number,
-  renderPagination?: () => React$Element<any>,
+  renderPagination?: (
+    index: number,
+    total: number,
+    instance: Object
+  ) => React$Element<any>,
   dotStyle?: StyleObj,
   activeDotStyle?: StyleObj,
   dotColor?: string,
