@@ -10,7 +10,7 @@
     "typecheck": "flow",
     "format": "npm run format:js && npm run format:json && npm run format:md",
     "format:js":
-      "prettier --write '*.js' 'src/**/*.js' 'examples/*.js' 'examples/**/*.js'",
+      "prettier --write '*.js' --parser flow 'src/**/*.js' 'examples/*.js' 'examples/**/*.js'",
     "format:json": "prettier --write --parser json '*.json' 'examples/*.json'",
     "format:md": "prettier --write --parser markdown '*.md'",
     "precommit": "lint-staged",
@@ -19,8 +19,13 @@
   },
   "eslintConfig": {
     "parser": "babel-eslint",
-    "plugins": ["react"],
-    "extends": ["standard", "plugin:react/recommended", "prettier"],
+    "plugins": ["react", "flowtype"],
+    "extends": [
+      "standard",
+      "plugin:react/recommended",
+      "plugin:flowtype/recommended",
+      "prettier"
+    ],
     "env": {
       "es6": true,
       "browser": true,
@@ -66,6 +71,7 @@
     "eslint": "^4.11.0",
     "eslint-config-prettier": "^2.8.0",
     "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-flowtype": "^2.39.1",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",

@@ -118,7 +118,7 @@ type Props = {
   autoplayTimeout: number,
   autoplayDirection: boolean,
   index: number,
-  renderPagination?: () => void,
+  renderPagination?: () => React$Element<any>,
   dotStyle?: StyleObj,
   activeDotStyle?: StyleObj,
   dotColor?: string,
@@ -193,11 +193,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   loopJumpTimer: ?number
   loopJumpTimer = null
 
-  scrollView: ?{
-    scrollTo: ({ x: number, y: number, animated: boolean }) => void,
-    setPage: (diff: number) => void,
-    setPageWithoutAnimation: (diff: number) => void
-  }
+  scrollView: ?React$ElementRef<ScrollView | ViewPagerAndroid>
 
   internals: {
     isScrolling: boolean,
@@ -661,7 +657,9 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     )
   }
 
-  setScrollViewRef = (scrollView: Object | null) => {
+  setScrollViewRef = (
+    scrollView: ?React$ElementRef<ScrollView | ViewPagerAndroid>
+  ) => {
     this.scrollView = scrollView
   }
 
@@ -683,6 +681,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
         </ScrollView>
       )
     }
+
     return (
       <ViewPagerAndroid
         ref={this.setScrollViewRef}
