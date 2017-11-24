@@ -612,34 +612,34 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   }
 
   renderNextButton = () => {
-    let button = null
-
     if (this.props.loop || this.state.index !== this.state.total - 1) {
-      button = this.props.nextButton || <Text style={styles.buttonText}>›</Text>
+      return (
+        <TouchableOpacity
+          onPress={() => this.scrollBy(1)}
+          disabled={this.props.disableNextButton}
+        >
+          <View>
+            {this.props.nextButton || <Text style={styles.buttonText}>›</Text>}
+          </View>
+        </TouchableOpacity>
+      )
     }
 
-    return (
-      <TouchableOpacity
-        onPress={() => button !== null && this.scrollBy(1)}
-        disabled={this.props.disableNextButton}
-      >
-        <View>{button}</View>
-      </TouchableOpacity>
-    )
+    return null
   }
 
   renderPrevButton = () => {
-    let button = null
-
     if (this.props.loop || this.state.index !== 0) {
-      button = this.props.prevButton || <Text style={styles.buttonText}>‹</Text>
+      return (
+        <TouchableOpacity onPress={() => this.scrollBy(-1)}>
+          <View>
+            {this.props.prevButton || <Text style={styles.buttonText}>‹</Text>}
+          </View>
+        </TouchableOpacity>
+      )
     }
 
-    return (
-      <TouchableOpacity onPress={() => button !== null && this.scrollBy(-1)}>
-        <View>{button}</View>
-      </TouchableOpacity>
-    )
+    return null
   }
 
   renderButtons = () => {
@@ -751,20 +751,19 @@ export default class ReactNativeSwiper extends Component<Props, State> {
                 {children[page]}
               </View>
             )
-          } else {
-            return (
-              <View style={pageStyleLoading} key={i}>
-                {loadMinimalLoader || <ActivityIndicator />}
-              </View>
-            )
           }
-        } else {
+
           return (
-            <View style={pageStyle} key={i}>
-              {children[page]}
+            <View style={pageStyleLoading} key={i}>
+              {loadMinimalLoader || <ActivityIndicator />}
             </View>
           )
         }
+        return (
+          <View style={pageStyle} key={i}>
+            {children[page]}
+          </View>
+        )
       })
     } else {
       pages = (
