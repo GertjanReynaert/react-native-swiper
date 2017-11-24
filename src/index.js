@@ -99,6 +99,8 @@ type Props = {
   children?: any,
   containerStyle?: StyleObj,
   style?: StyleObj,
+  width?: number,
+  height?: number,
   scrollViewStyle?: StyleObj,
   pagingEnabled: boolean,
   showsHorizontalScrollIndicator: boolean,
@@ -232,7 +234,12 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   getInitialState(props: Props, updateIndex: boolean = false) {
     const { width, height } = Dimensions.get('window')
     // set the current state
-    const state = this.state || { width: 0, height: 0, offset: { x: 0, y: 0 } }
+    const state = {
+      width: 0,
+      height: 0,
+      offset: { x: 0, y: 0 },
+      ...(this.state || {})
+    }
 
     const total = props.children ? props.children.length || 1 : 0
 
