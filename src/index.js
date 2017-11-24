@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
   StyleSheet
 } from 'react-native'
+import type { Event } from 'react-native'
 import type { StyleObj } from 'react-native/Libraries/StyleSheet/StyleSheetTypes'
 
 /**
@@ -269,7 +270,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     return Object.assign({}, this.state, this.internals)
   }
 
-  onLayout = event => {
+  onLayout = (event: Event) => {
     const { width, height } = event.nativeEvent.layout
     const offset = (this.internals.offset = {})
     const state = { width, height }
@@ -348,7 +349,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    * Scroll begin handle
    * @param  {object} e native event
    */
-  onScrollBegin = e => {
+  onScrollBegin = (e: Event) => {
     // update scroll state
     this.internals.isScrolling = true
     this.props.onScrollBeginDrag &&
@@ -359,30 +360,26 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    * Scroll end handle
    * @param  {object} e native event
    */
-  onScrollEnd = e => {
+  onScrollEnd = (e: Event) => {
     // update scroll state
     this.internals.isScrolling = false
 
-    // making our events coming from android compatible to updateIndex logic
-    if (!e.nativeEvent.contentOffset) {
-      if (this.state.dir === 'x') {
-        e.nativeEvent.contentOffset = {
-          x: e.nativeEvent.position * this.state.width
-        }
-      } else {
-        e.nativeEvent.contentOffset = {
-          y: e.nativeEvent.position * this.state.height
-        }
-      }
-    }
+    const { contentOffset, position } = e.nativeEvent
+    const { dir, width, height } = this.state
 
-    this.updateIndex(e.nativeEvent.contentOffset, this.state.dir, () => {
+    // making our events coming from android compatible to updateIndex logic
+    const offset =
+      contentOffset || dir === 'x'
+        ? { x: position * width }
+        : { y: position * height }
+
+    this.updateIndex(offset, dir, () => {
       this.autoplay()
       this.loopJump()
 
-      // if `onMomentumScrollEnd` registered will be called here
-      this.props.onMomentumScrollEnd &&
+      if (this.props.onMomentumScrollEnd) {
         this.props.onMomentumScrollEnd(e, this.fullState(), this)
+      }
     })
   }
 
@@ -390,7 +387,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    * Drag end handle
    * @param {object} e native event
    */
-  onScrollEndDrag = e => {
+  onScrollEndDrag = (e: Event) => {
     const { contentOffset } = e.nativeEvent
     const { horizontal, children } = this.props
     const { index } = this.state
