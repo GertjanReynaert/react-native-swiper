@@ -255,7 +255,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   onLayout = (event: Event) => {
     const { width, height } = event.nativeEvent.layout
     const { offset } = this.state
-    const state = { width, height }
+    const newState = { width, height }
 
     if (this.state.total > 1) {
       const setup = this.props.loop ? this.state.index + 1 : this.state.index
@@ -270,7 +270,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       width !== this.state.width ||
       height !== this.state.height
     ) {
-      state.offset = offset
+      newState.offset = offset
     }
 
     // related to https://github.com/leecade/react-native-swiper/issues/570
@@ -285,7 +285,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       }
     }
 
-    this.setState(state)
+    this.setState(newState)
   }
 
   loopJump = () => {
