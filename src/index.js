@@ -221,10 +221,13 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     // Default horizontal
     const dir = props.horizontal === false ? 'y' : 'x'
 
-    const initState = {
+    return {
       autoplayEnd: false,
       loopJump: false,
-      offset: {},
+      offset: {
+        x: dir === 'x' ? width * props.index : 0,
+        y: dir === 'y' ? height * props.index : 0
+      },
       total,
       index:
         state.total === total && !updateIndex
@@ -239,11 +242,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
         : this.state && this.state.height ? this.state.height : height,
       isScrolling: false
     }
-
-    initState.offset[initState.dir] =
-      initState.dir === 'y' ? height * props.index : width * props.index
-
-    return initState
   }
 
   // include internals with state
