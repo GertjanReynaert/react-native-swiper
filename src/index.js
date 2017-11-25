@@ -91,6 +91,15 @@ const styles = StyleSheet.create({
     fontSize: 50,
     color: '#007aff',
     fontFamily: 'Arial'
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginLeft: 3,
+    marginRight: 3,
+    marginTop: 3,
+    marginBottom: 3
   }
 })
 
@@ -515,16 +524,8 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     const ActiveDot = this.props.activeDot || (
       <View
         style={[
-          {
-            backgroundColor: this.props.activeDotColor || '#007aff',
-            width: 8,
-            height: 8,
-            borderRadius: 4,
-            marginLeft: 3,
-            marginRight: 3,
-            marginTop: 3,
-            marginBottom: 3
-          },
+          styles.dot,
+          { backgroundColor: this.props.activeDotColor || '#007aff' },
           this.props.activeDotStyle
         ]}
       />
@@ -532,16 +533,8 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     const Dot = this.props.dot || (
       <View
         style={[
-          {
-            backgroundColor: this.props.dotColor || 'rgba(0,0,0,.2)',
-            width: 8,
-            height: 8,
-            borderRadius: 4,
-            marginLeft: 3,
-            marginRight: 3,
-            marginTop: 3,
-            marginBottom: 3
-          },
+          styles.dot,
+          { backgroundColor: this.props.dotColor || 'rgba(0,0,0,.2)' },
           this.props.dotStyle
         ]}
       />
