@@ -102,13 +102,6 @@ type Props = {
   width?: number,
   height?: number,
   scrollViewStyle?: StyleObj,
-  pagingEnabled: boolean,
-  showsHorizontalScrollIndicator: boolean,
-  showsVerticalScrollIndicator: boolean,
-  bounces: boolean,
-  scrollsToTop: boolean,
-  removeClippedSubviews: boolean,
-  automaticallyAdjustContentInsets: boolean,
   showsPagination: boolean,
   showsButtons: boolean,
   disableNextButton: boolean,
@@ -155,23 +148,9 @@ type State = {
   isScrolling: boolean
 }
 
-// missing `module.exports = exports['default'];` with babel6
-// export default React.createClass({
 export default class ReactNativeSwiper extends Component<Props, State> {
-  /**
-   * Default props
-   * @return {object} props
-   * @see http://facebook.github.io/react-native/docs/scrollview.html
-   */
   static defaultProps = {
     horizontal: true,
-    pagingEnabled: true,
-    showsHorizontalScrollIndicator: false,
-    showsVerticalScrollIndicator: false,
-    bounces: false,
-    scrollsToTop: false,
-    removeClippedSubviews: true,
-    automaticallyAdjustContentInsets: false,
     showsPagination: true,
     showsButtons: false,
     disableNextButton: false,
@@ -185,10 +164,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     onIndexChanged: () => {}
   }
 
-  /**
-   * Init states
-   * @return {object} states
-   */
   state = this.getInitialState(this.props)
 
   initialRender: boolean
