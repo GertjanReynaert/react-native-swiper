@@ -111,7 +111,6 @@ type Props = {
   width?: number,
   height?: number,
   scrollViewStyle?: StyleObj,
-  showsPagination: boolean,
   showsButtons: boolean,
   disableNextButton: boolean,
   loadMinimal: boolean,
@@ -122,24 +121,22 @@ type Props = {
   autoplayTimeout: number,
   autoplayDirection: boolean,
   index: number,
+
+  // Pagination
+  showsPagination: boolean,
   renderPagination?: (
     index: number,
     total: number,
     instance: Object
   ) => React$Element<any>,
-  dotStyle?: StyleObj,
-  activeDotStyle?: StyleObj,
-  dotColor?: string,
-  activeDotColor?: string,
+  paginationStyle?: StyleObj,
+  renderDot?: ({ active: boolean }) => React$Element<any>,
   /**
    * Called when the index has changed because the user swiped.
    */
   onIndexChanged: (index: number) => void,
   onScrollBeginDrag?: () => void,
   onMomentumScrollEnd?: () => void,
-  activeDot?: any, // element
-  dot?: any, // element
-  paginationStyle?: StyleObj,
   nextButton?: any, // element
   prevButton?: any, // element
   buttonWrapperStyle?: StyleObj
@@ -520,24 +517,16 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     // By default, dots only show when `total` >= 2
     if (this.state.total <= 1) return null
 
-    const ActiveDot = this.props.activeDot || (
+    const DefaultDot = ({ active }: { active: boolean }) => (
       <View
         style={[
           styles.dot,
-          { backgroundColor: this.props.activeDotColor || '#007aff' },
-          this.props.activeDotStyle
+          { backgroundColor: active ? '#007aff' : 'rgba(0,0,0,.2)' }
         ]}
       />
     )
-    const Dot = this.props.dot || (
-      <View
-        style={[
-          styles.dot,
-          { backgroundColor: this.props.dotColor || 'rgba(0,0,0,.2)' },
-          this.props.dotStyle
-        ]}
-      />
-    )
+
+    const Dot = this.props.renderDot || DefaultDot
 
     const arrayWithLength = length => Array.from({ length }, (v, i) => i)
 
@@ -549,10 +538,9 @@ export default class ReactNativeSwiper extends Component<Props, State> {
           this.props.paginationStyle
         ]}
       >
-        {arrayWithLength(this.state.total).map(index => {
-          const dot = index === this.state.index ? ActiveDot : Dot
-          return React.cloneElement(dot, { key: index })
-        })}
+        {arrayWithLength(this.state.total).map(index => (
+          <Dot key={index} active={index === this.state.index} />
+        ))}
       </View>
     )
   }
