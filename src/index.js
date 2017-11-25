@@ -107,6 +107,18 @@ const styles = StyleSheet.create({
   }
 })
 
+type State = {
+  autoplayEnd: boolean,
+  loopJump: boolean,
+  offset: Object,
+  total: number,
+  index: number,
+  dir: 'x' | 'y',
+  width: number,
+  height: number,
+  isScrolling: boolean
+}
+
 type Props = {
   horizontal: boolean,
   children?: any,
@@ -139,23 +151,11 @@ type Props = {
    * Called when the index has changed because the user swiped.
    */
   onIndexChanged: (index: number) => void,
-  onScrollBeginDrag?: () => void,
-  onMomentumScrollEnd?: () => void,
+  onScrollBeginDrag?: (event: Event, state: State, swiper: any) => void,
+  onMomentumScrollEnd?: (event: Event, state: State, swiper: any) => void,
   nextButton?: any, // element
   prevButton?: any, // element
   buttonWrapperStyle?: StyleObj
-}
-
-type State = {
-  autoplayEnd: boolean,
-  loopJump: boolean,
-  offset: Object,
-  total: number,
-  index: number,
-  dir: 'x' | 'y',
-  width: number,
-  height: number,
-  isScrolling: boolean
 }
 
 export default class ReactNativeSwiper extends Component<Props, State> {
@@ -484,34 +484,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     }
   }
 
-  scrollViewPropOverrides = () => {
-    /*
-    const scrollResponders = [
-      'onMomentumScrollBegin',
-      'onTouchStartCapture',
-      'onTouchStart',
-      'onTouchEnd',
-      'onResponderRelease',
-    ]
-    */
-
-    const scrollResponders = [
-      'onMomentumScrollEnd',
-      'renderPagination',
-      'onScrollBeginDrag'
-    ]
-
-    return Object.keys(this.props).reduce((acc, propName) => {
-      const prop = this.props[propName]
-
-      if (typeof prop === 'function' && !scrollResponders.includes(propName)) {
-        return { ...acc, [propName]: e => prop(e, this.state, this) }
-      }
-
-      return acc
-    }, {})
-  }
-
   /**
    * Render pagination
    * @return {object} react-dom
@@ -618,7 +590,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
         <ScrollView
           ref={this.setScrollViewRef}
           {...this.props}
-          {...this.scrollViewPropOverrides()}
           contentContainerStyle={[styles.wrapperIOS, this.props.style]}
           contentOffset={this.state.offset}
           onScrollBeginDrag={this.onScrollBegin}
