@@ -485,7 +485,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   }
 
   scrollViewPropOverrides = () => {
-    let overrides = {}
     /*
     const scrollResponders = [
       'onMomentumScrollBegin',
@@ -502,15 +501,15 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       'onScrollBeginDrag'
     ]
 
-    Object.keys(this.props).forEach(propName => {
+    return Object.keys(this.props).reduce((acc, propName) => {
       const prop = this.props[propName]
-      // if(~scrollResponders.indexOf(prop)
-      if (typeof prop === 'function' && !scrollResponders.includes(propName)) {
-        overrides[propName] = e => prop(e, this.state, this)
-      }
-    })
 
-    return overrides
+      if (typeof prop === 'function' && !scrollResponders.includes(propName)) {
+        return { ...acc, [propName]: e => prop(e, this.state, this) }
+      }
+
+      return acc
+    }, {})
   }
 
   /**
