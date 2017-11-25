@@ -216,7 +216,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       ...(this.state || {})
     }
 
-    const total = props.children ? props.children.length || 1 : 0
+    const total = props.children ? Children.toArray(props.children).length : 0
 
     // Default horizontal
     const dir = props.horizontal === false ? 'y' : 'x'
