@@ -390,10 +390,9 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    * @param  {string} dir    'x' || 'y'
    */
   updateIndex = (offset: Object, dir: 'x' | 'y', cb: () => void) => {
-    const state = this.state
-    let index = state.index
+    let index = this.state.index
     const diff = offset[dir] - this.internals.offset[dir]
-    const step = dir === 'x' ? state.width : state.height
+    const step = dir === 'x' ? this.state.width : this.state.height
 
     // Do nothing if offset no change.
     if (!diff) return
@@ -405,9 +404,9 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
     if (this.props.loop) {
       if (index <= -1) {
-        index = state.total - 1
-        offset[dir] = step * state.total
-      } else if (index >= state.total) {
+        index = this.state.total - 1
+        offset[dir] = step * this.state.total
+      } else if (index >= this.state.total) {
         index = 0
         offset[dir] = step
       }
