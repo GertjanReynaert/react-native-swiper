@@ -121,20 +121,31 @@ type State = {
 
 type Props = {
   horizontal: boolean,
-  children?: any,
+
+  children?: any, // Slides
   containerStyle?: StyleObj,
-  style?: StyleObj,
+  contentContainerStyle?: StyleObj,
+  scrollViewStyle?: StyleObj,
   width?: number,
   height?: number,
-  scrollViewStyle?: StyleObj,
-  loadMinimal: boolean,
-  loadMinimalSize: number,
-  loadMinimalLoader?: any, // element
+
+  // Index props
+  index: number,
+  // Called when the index has changed because the user swiped.
+  onIndexChanged: (index: number) => void,
+
+  // Loop props
   loop: boolean,
+
+  // AutoPlay props
   autoplay: boolean,
   autoplayTimeout: number,
   autoplayDirection: boolean,
-  index: number,
+
+  // Load minimal props
+  loadMinimal: boolean,
+  loadMinimalSize: number,
+  loadMinimalLoader?: any, // element
 
   // Pagination
   showsPagination: boolean,
@@ -153,9 +164,7 @@ type Props = {
   disableNextButton: boolean,
   prevButton?: any, // element
 
-  // Functions
-  // Called when the index has changed because the user swiped.
-  onIndexChanged: (index: number) => void,
+  // Event handlers
   onScrollBeginDrag?: (event: Event, state: State, swiper: any) => void,
   onMomentumScrollEnd?: (event: Event, state: State, swiper: any) => void
 }
@@ -576,7 +585,10 @@ export default class ReactNativeSwiper extends Component<Props, State> {
         <ScrollView
           ref={this.setScrollViewRef}
           {...this.props}
-          contentContainerStyle={[styles.wrapperIOS, this.props.style]}
+          contentContainerStyle={[
+            styles.wrapperIOS,
+            this.props.contentContainerStyle
+          ]}
           contentOffset={this.state.offset}
           onScrollBeginDrag={this.onScrollBegin}
           onMomentumScrollEnd={this.onScrollEnd}
@@ -595,7 +607,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
         initialPage={this.props.loop ? this.state.index + 1 : this.state.index}
         onPageSelected={this.onScrollEnd}
         key={pages.length}
-        style={[styles.wrapperAndroid, this.props.style]}
+        style={[styles.wrapperAndroid, this.props.contentContainerStyle]}
       >
         {pages}
       </ViewPagerAndroid>
