@@ -390,10 +390,11 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     const { dir } = this.state
     let { index } = this.state
     const diff = offset[dir] - this.state.offset[dir]
-    const step = dir === 'x' ? this.state.width : this.state.height
 
     // Do nothing if offset no change.
     if (!diff) return
+
+    const step = dir === 'x' ? this.state.width : this.state.height
 
     // Note: if touch very very quickly and continuous,
     // the variation of `index` more than 1.
