@@ -38,28 +38,26 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
 
-  pagination_x: {
+  pagination: {
     position: 'absolute',
-    bottom: 25,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent'
   },
 
+  pagination_x: {
+    bottom: 25,
+    left: 0,
+    right: 0,
+    flexDirection: 'row'
+  },
+
   pagination_y: {
-    position: 'absolute',
     right: 15,
     top: 0,
     bottom: 0,
-    flexDirection: 'column',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent'
+    flexDirection: 'column'
   },
 
   title: {
@@ -534,7 +532,8 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       <View
         pointerEvents="none"
         style={[
-          styles['pagination_' + this.state.dir],
+          styles.pagination,
+          this.state.dir === 'x' ? styles.pagination_x : styles.pagination_y,
           this.props.paginationStyle
         ]}
       >
