@@ -109,7 +109,6 @@ const styles = StyleSheet.create({
 
 type State = {
   autoplayEnd: boolean,
-  loopJump: boolean,
   offset: Object,
   total: number,
   index: number,
@@ -240,7 +239,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
     return {
       autoplayEnd: false,
-      loopJump: false,
       offset: {
         x: dir === 'x' ? width * props.index : 0,
         y: dir === 'y' ? height * props.index : 0
@@ -298,7 +296,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   }
 
   loopJump = () => {
-    if (!this.state.loopJump) return
+    if (!this.props.loop) return
     const i = this.state.index + (this.props.loop ? 1 : 0)
 
     this.loopJumpTimer = setTimeout(() => {
@@ -425,11 +423,10 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
     const newState = {
       index,
-      loopJump: this.props.loop,
       offset
     }
 
-    // only update offset in state if loopJump is true
+    // only update offset in state if this.props.loop is true
     if (this.props.loop) {
       // when swiping to the beginning of a looping set for the third time,
       // the new offset will be the same as the last one set in state.
