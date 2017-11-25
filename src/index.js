@@ -177,10 +177,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
   scrollView: ?React$ElementRef<ScrollView | ViewPagerAndroid>
 
-  internals: {
-    offset: Object
-  }
-
   componentWillReceiveProps(nextProps: Props) {
     if (!nextProps.autoplay && this.autoplayTimer) {
       clearTimeout(this.autoplayTimer)
@@ -244,14 +240,9 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     }
   }
 
-  // include internals with state
-  fullState() {
-    return { ...this.state, ...this.internals }
-  }
-
   onLayout = (event: Event) => {
     const { width, height } = event.nativeEvent.layout
-    const offset = (this.internals.offset = {})
+    const { offset } = this.state
     const state = { width, height }
 
     if (this.state.total > 1) {
@@ -333,7 +324,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     this.setState({ isScrolling: true })
 
     if (this.props.onScrollBeginDrag) {
-      this.props.onScrollBeginDrag(e, this.fullState(), this)
+      this.props.onScrollBeginDrag(e, this.state, this)
     }
   }
 
@@ -359,7 +350,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       this.loopJump()
 
       if (this.props.onMomentumScrollEnd) {
-        this.props.onMomentumScrollEnd(e, this.fullState(), this)
+        this.props.onMomentumScrollEnd(e, this.state, this)
       }
     })
   }
@@ -371,8 +362,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   onScrollEndDrag = (e: Event) => {
     const { contentOffset } = e.nativeEvent
     const { horizontal, children } = this.props
-    const { index } = this.state
-    const { offset } = this.internals
+    const { index, offset } = this.state
     const previousOffset = horizontal ? offset.x : offset.y
     const newOffset = horizontal ? contentOffset.x : contentOffset.y
 
@@ -391,7 +381,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    */
   updateIndex = (offset: Object, dir: 'x' | 'y', cb: () => void) => {
     let index = this.state.index
-    const diff = offset[dir] - this.internals.offset[dir]
+    const diff = offset[dir] - this.state.offset[dir]
     const step = dir === 'x' ? this.state.width : this.state.height
 
     // Do nothing if offset no change.
@@ -417,7 +407,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       loopJump: this.props.loop
     }
 
-    this.internals.offset = offset
+    this.setState({ offset })
 
     // only update offset in state if loopJump is true
     if (this.props.loop) {
@@ -426,7 +416,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       // Setting the offset to the same thing will not do anything,
       // so we increment it by 1 then immediately set it to what it should be,
       // after render.
-      if (offset[dir] === this.internals.offset[dir]) {
+      if (offset[dir] === this.state.offset[dir]) {
         newState.offset = { x: 0, y: 0 }
         newState.offset[dir] = offset[dir] + 1
         this.setState(newState, () => {
@@ -506,7 +496,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       const prop = this.props[propName]
       // if(~scrollResponders.indexOf(prop)
       if (typeof prop === 'function' && !scrollResponders.includes(propName)) {
-        overrides[propName] = e => prop(e, this.fullState(), this)
+        overrides[propName] = e => prop(e, this.state, this)
       }
     })
 
