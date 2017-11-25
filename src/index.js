@@ -258,10 +258,8 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     const state = { width, height }
 
     if (this.state.total > 1) {
-      let setup = this.state.index
-      if (this.props.loop) {
-        setup++
-      }
+      const setup = this.props.loop ? this.state.index + 1 : this.state.index
+
       offset[this.state.dir] =
         this.state.dir === 'y' ? height * setup : width * setup
     }
