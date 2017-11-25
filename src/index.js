@@ -413,10 +413,9 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
     const newState = {
       index,
-      loopJump: this.props.loop
+      loopJump: this.props.loop,
+      offset
     }
-
-    this.setState({ offset })
 
     // only update offset in state if loopJump is true
     if (this.props.loop) {
@@ -431,9 +430,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
         this.setState(newState, () => {
           this.setState({ offset }, cb)
         })
-      } else {
-        newState.offset = offset
-        this.setState(newState, cb)
       }
     } else {
       this.setState(newState, cb)
