@@ -38,6 +38,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
 
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
   pagination: {
     position: 'absolute',
     flex: 1,
@@ -662,14 +668,8 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     const loopVal = loop ? 1 : 0
     let pages = []
 
-    const pageStyle = [{ width: width, height: height }, styles.slide]
-    const pageStyleLoading = {
-      width,
-      height,
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center'
-    }
+    const pageStyle = [{ width, height }, styles.slide]
+    const pageStyleLoading = [{ width, height }, styles.loading]
 
     // For make infinite at least total > 1
     if (total > 1) {
