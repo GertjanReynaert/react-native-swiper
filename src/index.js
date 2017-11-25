@@ -547,11 +547,8 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       />
     )
     for (let i = 0; i < this.state.total; i++) {
-      dots.push(
-        i === this.state.index
-          ? React.cloneElement(ActiveDot, { key: i })
-          : React.cloneElement(Dot, { key: i })
-      )
+      const dot = i === this.state.index ? ActiveDot : Dot
+      dots.push(React.cloneElement(dot, { key: i }))
     }
 
     return (
