@@ -127,8 +127,6 @@ type Props = {
   width?: number,
   height?: number,
   scrollViewStyle?: StyleObj,
-  showsButtons: boolean,
-  disableNextButton: boolean,
   loadMinimal: boolean,
   loadMinimalSize: number,
   loadMinimalLoader?: any, // element
@@ -147,15 +145,19 @@ type Props = {
   ) => React$Element<any>,
   paginationStyle?: StyleObj,
   renderDot?: ({ active: boolean }) => React$Element<any>,
-  /**
-   * Called when the index has changed because the user swiped.
-   */
+
+  // Buttons
+  showsButtons: boolean,
+  buttonWrapperStyle?: StyleObj,
+  nextButton?: any, // element
+  disableNextButton: boolean,
+  prevButton?: any, // element
+
+  // Functions
+  // Called when the index has changed because the user swiped.
   onIndexChanged: (index: number) => void,
   onScrollBeginDrag?: (event: Event, state: State, swiper: any) => void,
-  onMomentumScrollEnd?: (event: Event, state: State, swiper: any) => void,
-  nextButton?: any, // element
-  prevButton?: any, // element
-  buttonWrapperStyle?: StyleObj
+  onMomentumScrollEnd?: (event: Event, state: State, swiper: any) => void
 }
 
 export default class ReactNativeSwiper extends Component<Props, State> {
@@ -441,18 +443,12 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     }
   }
 
-  /**
-   * Scroll by index
-   * @param  {number} index offset index
-   * @param  {bool} animated
-   */
-
-  scrollBy = (index: number, animated: boolean = true) => {
+  scrollBy = (diffFromIndex: number, animated: boolean = true) => {
     if (this.state.isScrolling || this.state.total < 2) return
 
     const { scrollView } = this
     const { dir, width, height } = this.state
-    const diff = (this.props.loop ? 1 : 0) + index + this.state.index
+    const diff = (this.props.loop ? 1 : 0) + diffFromIndex + this.state.index
 
     const x = dir === 'x' ? diff * width : 0
     const y = dir === 'y' ? diff * height : 0
