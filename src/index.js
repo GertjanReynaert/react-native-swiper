@@ -392,7 +392,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     const diff = offset[dir] - this.state.offset[dir]
 
     // Do nothing if offset no change.
-    if (!diff) return
+    if (diff === 0) return
 
     const step = dir === 'x' ? this.state.width : this.state.height
 
