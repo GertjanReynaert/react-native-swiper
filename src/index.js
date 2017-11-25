@@ -357,7 +357,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
         ? { x: position * width }
         : { y: position * height }
 
-    this.updateIndex(offset, dir, () => {
+    this.updateIndex(offset, () => {
       this.autoplay()
       this.loopJump()
 
@@ -386,13 +386,9 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     }
   }
 
-  /**
-   * Update index after scroll
-   * @param  {object} offset content offset
-   * @param  {string} dir    'x' || 'y'
-   */
-  updateIndex = (offset: Object, dir: 'x' | 'y', cb: () => void) => {
-    let index = this.state.index
+  updateIndex = (offset: Object, cb: () => void) => {
+    const { dir } = this.state
+    let { index } = this.state
     const diff = offset[dir] - this.state.offset[dir]
     const step = dir === 'x' ? this.state.width : this.state.height
 
