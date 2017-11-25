@@ -520,7 +520,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     // By default, dots only show when `total` >= 2
     if (this.state.total <= 1) return null
 
-    let dots = []
     const ActiveDot = this.props.activeDot || (
       <View
         style={[
@@ -539,10 +538,8 @@ export default class ReactNativeSwiper extends Component<Props, State> {
         ]}
       />
     )
-    for (let i = 0; i < this.state.total; i++) {
-      const dot = i === this.state.index ? ActiveDot : Dot
-      dots.push(React.cloneElement(dot, { key: i }))
-    }
+
+    const arrayWithLength = length => Array.from({ length }, (v, i) => i)
 
     return (
       <View
@@ -552,7 +549,10 @@ export default class ReactNativeSwiper extends Component<Props, State> {
           this.props.paginationStyle
         ]}
       >
-        {dots}
+        {arrayWithLength(this.state.total).map(index => {
+          const dot = index === this.state.index ? ActiveDot : Dot
+          return React.cloneElement(dot, { key: index })
+        })}
       </View>
     )
   }
