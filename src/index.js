@@ -17,6 +17,7 @@ import {
 } from 'react-native'
 import type { Event } from 'react-native'
 import type { StyleObj } from 'react-native/Libraries/StyleSheet/StyleSheetTypes'
+import DefaultDot from './Dot'
 
 const styles = StyleSheet.create({
   container: {
@@ -95,15 +96,6 @@ const styles = StyleSheet.create({
     fontSize: 50,
     color: '#007aff',
     fontFamily: 'Arial'
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginLeft: 3,
-    marginRight: 3,
-    marginTop: 3,
-    marginBottom: 3
   }
 })
 
@@ -489,15 +481,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   renderPagination = () => {
     // By default, dots only show when `total` >= 2
     if (this.state.total <= 1) return null
-
-    const DefaultDot = ({ active }: { active: boolean }) => (
-      <View
-        style={[
-          styles.dot,
-          { backgroundColor: active ? '#007aff' : 'rgba(0,0,0,.2)' }
-        ]}
-      />
-    )
 
     const Dot = this.props.renderDot || DefaultDot
 
