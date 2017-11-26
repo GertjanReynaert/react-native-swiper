@@ -527,34 +527,37 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   }
 
   renderNextButton = () => {
-    if (this.props.loop || this.state.index !== this.state.total - 1) {
-      return (
-        <TouchableOpacity
-          onPress={() => this.scrollBy(1)}
-          disabled={this.props.disableNextButton}
-        >
-          <View>
-            {this.props.nextButton || <Text style={styles.buttonText}>›</Text>}
-          </View>
-        </TouchableOpacity>
-      )
+    if (
+      this.state.index === this.state.total - 1 &&
+      this.props.loop === false
+    ) {
+      return null
     }
 
-    return null
+    return (
+      <TouchableOpacity
+        onPress={() => this.scrollBy(1)}
+        disabled={this.props.disableNextButton}
+      >
+        <View>
+          {this.props.nextButton || <Text style={styles.buttonText}>›</Text>}
+        </View>
+      </TouchableOpacity>
+    )
   }
 
   renderPrevButton = () => {
-    if (this.props.loop || this.state.index !== 0) {
-      return (
-        <TouchableOpacity onPress={() => this.scrollBy(-1)}>
-          <View>
-            {this.props.prevButton || <Text style={styles.buttonText}>‹</Text>}
-          </View>
-        </TouchableOpacity>
-      )
+    if (this.state.index === 0 && this.props.loop) {
+      return null
     }
 
-    return null
+    return (
+      <TouchableOpacity onPress={() => this.scrollBy(-1)}>
+        <View>
+          {this.props.prevButton || <Text style={styles.buttonText}>‹</Text>}
+        </View>
+      </TouchableOpacity>
+    )
   }
 
   renderButtons = () => {
