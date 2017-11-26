@@ -5,11 +5,9 @@
  */
 import React, { Component, Children } from 'react'
 import {
-  Text,
   View,
   ScrollView,
   Dimensions,
-  TouchableOpacity,
   ViewPagerAndroid,
   Platform,
   ActivityIndicator,
@@ -18,6 +16,7 @@ import {
 import type { Event } from 'react-native'
 import type { StyleObj } from 'react-native/Libraries/StyleSheet/StyleSheetTypes'
 import DefaultDot from './Dot'
+import DefaultButton from './Button'
 
 const styles = StyleSheet.create({
   container: {
@@ -90,12 +89,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     justifyContent: 'space-between',
     alignItems: 'center'
-  },
-
-  buttonText: {
-    fontSize: 50,
-    color: '#007aff',
-    fontFamily: 'Arial'
   }
 })
 
@@ -151,9 +144,8 @@ type Props = {
   // Buttons
   showsButtons: boolean,
   buttonWrapperStyle?: StyleObj,
-  nextButton?: any, // element
-  disableNextButton: boolean,
-  prevButton?: any, // element
+  renderNextButton?: ({ onPress: () => void }) => React$Element<any>,
+  renderPreviousButton?: ({ onPress: () => void }) => React$Element<any>,
 
   // Event handlers
   onScrollBeginDrag?: (event: Event, state: State, swiper: any) => void,
@@ -509,6 +501,20 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     return title ? <View style={styles.title}>{title}</View> : null
   }
 
+  renderPreviousButton = () => {
+    if (this.state.index === 0 && this.props.loop) {
+      return null
+    }
+
+    const DefaultPreviousButton = ({ onPress }) => (
+      <DefaultButton onPress={onPress} text="<" />
+    )
+
+    const Button = this.props.renderPreviousButton || DefaultPreviousButton
+
+    return <Button onPress={() => this.scrollBy(-1)} />
+  }
+
   renderNextButton = () => {
     if (
       this.state.index === this.state.total - 1 &&
@@ -517,30 +523,13 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       return null
     }
 
-    return (
-      <TouchableOpacity
-        onPress={() => this.scrollBy(1)}
-        disabled={this.props.disableNextButton}
-      >
-        <View>
-          {this.props.nextButton || <Text style={styles.buttonText}>›</Text>}
-        </View>
-      </TouchableOpacity>
+    const DefaultNextButton = ({ onPress }) => (
+      <DefaultButton onPress={onPress} text=">" />
     )
-  }
 
-  renderPrevButton = () => {
-    if (this.state.index === 0 && this.props.loop) {
-      return null
-    }
+    const Button = this.props.renderNextButton || DefaultNextButton
 
-    return (
-      <TouchableOpacity onPress={() => this.scrollBy(-1)}>
-        <View>
-          {this.props.prevButton || <Text style={styles.buttonText}>‹</Text>}
-        </View>
-      </TouchableOpacity>
-    )
+    return <Button onPress={() => this.scrollBy(1)} />
   }
 
   renderButtons = () => {
@@ -556,7 +545,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
           this.props.buttonWrapperStyle
         ]}
       >
-        {this.renderPrevButton()}
+        {this.renderPreviousButton()}
         {this.renderNextButton()}
       </View>
     )
