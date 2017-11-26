@@ -206,6 +206,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       this.props.onIndexChanged(nextState.index)
   }
 
+  // Ok
   getInitialState(props: Props, updateIndex: boolean = false) {
     const { width, height } = Dimensions.get('window')
     // set the current state
@@ -466,10 +467,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     }
   }
 
-  /**
-   * Render pagination
-   * @return {object} react-dom
-   */
+  // Ok
   renderPagination = () => {
     // By default, dots only show when `total` >= 2
     if (this.state.total <= 1) return null
@@ -494,6 +492,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     )
   }
 
+  // Ok
   renderTitle = () => {
     const child = Children.toArray(this.props.children)[this.state.index]
     const title = child && child.props && child.props.title
@@ -501,6 +500,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     return title ? <View style={styles.title}>{title}</View> : null
   }
 
+  // Ok
   renderPreviousButton = () => {
     if (this.state.index === 0 && this.props.loop) {
       return null
@@ -515,6 +515,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     return <Button onPress={() => this.scrollBy(-1)} />
   }
 
+  // Ok
   renderNextButton = () => {
     if (
       this.state.index === this.state.total - 1 &&
@@ -532,6 +533,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     return <Button onPress={() => this.scrollBy(1)} />
   }
 
+  // Ok
   renderButtons = () => {
     return (
       <View
@@ -551,6 +553,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     )
   }
 
+  // Ok
   setScrollViewRef = (
     scrollView: ?React$ElementRef<ScrollView | ViewPagerAndroid>
   ) => {
@@ -622,7 +625,9 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       // Re-design a loop model for avoid img flickering
       pages = Object.keys(children)
       if (loop) {
-        pages.unshift(total - 1 + '')
+        // Remove the last item
+        pages.unshift((total - 1).toString())
+        // Add the first item at the end
         pages.push('0')
       }
 
