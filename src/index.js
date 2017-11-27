@@ -567,7 +567,63 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     this.scrollView = scrollView
   }
 
-  renderScrollView = (pages: Array<any>) => {
+  getPagesToRender = () => {
+    const { index, width, height } = this.state
+    const {
+      children,
+      loop,
+      loadMinimal,
+      loadMinimalSize,
+      loadMinimalLoader
+    } = this.props
+    const total = this.getTotalSlides(this.props)
+
+    const pageStyle = [{ width, height }, styles.slide]
+    const pageStyleLoading = [{ width, height }, styles.loading]
+
+    // For make infinite at least total > 1
+    if (total <= 1) {
+      return (
+        <View style={pageStyle} key={0}>
+          {children}
+        </View>
+      )
+    }
+
+    const childArray = Children.toArray(children)
+    // Re-design a loop model for avoid img flickering
+    const pages = loop
+      ? [childArray[0], ...childArray, childArray[total - 1]]
+      : childArray
+
+    const loopVal = loop ? 1 : 0
+    const indexInMinimalRange = i =>
+      i >= index + loopVal - loadMinimalSize &&
+      i <= index + loopVal + loadMinimalSize
+
+    if (loadMinimal) {
+      return pages.map(
+        (page, i) =>
+          indexInMinimalRange(i) ? (
+            <View style={pageStyle} key={i}>
+              {page}
+            </View>
+          ) : (
+            <View style={pageStyleLoading} key={i}>
+              {loadMinimalLoader || <ActivityIndicator />}
+            </View>
+          )
+      )
+    }
+
+    return pages.map((page, i) => (
+      <View style={pageStyle} key={i}>
+        {page}
+      </View>
+    ))
+  }
+
+  renderScrollView = (pages: any) => {
     if (Platform.OS === 'ios') {
       return (
         <ScrollView
@@ -602,75 +658,15 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     )
   }
 
-  /**
-   * Default render
-   * @return {object} react-dom
-   */
   render() {
-    const { index, width, height } = this.state
     const {
-      children,
       containerStyle,
-      loop,
-      loadMinimal,
-      loadMinimalSize,
-      loadMinimalLoader,
       renderPagination,
       showsButtons,
       showsPagination
     } = this.props
     const total = this.getTotalSlides(this.props)
-    // let dir = this.state.dir
-    // let key = 0
-    const loopVal = loop ? 1 : 0
-    let pages = []
-
-    const pageStyle = [{ width, height }, styles.slide]
-    const pageStyleLoading = [{ width, height }, styles.loading]
-
-    // For make infinite at least total > 1
-    if (total > 1) {
-      // Re-design a loop model for avoid img flickering
-      pages = Object.keys(children)
-      if (loop) {
-        // Remove the last item
-        pages.unshift((total - 1).toString())
-        // Add the first item at the end
-        pages.push('0')
-      }
-
-      pages = pages.map((page, i) => {
-        if (loadMinimal) {
-          if (
-            i >= index + loopVal - loadMinimalSize &&
-            i <= index + loopVal + loadMinimalSize
-          ) {
-            return (
-              <View style={pageStyle} key={i}>
-                {children[page]}
-              </View>
-            )
-          }
-
-          return (
-            <View style={pageStyleLoading} key={i}>
-              {loadMinimalLoader || <ActivityIndicator />}
-            </View>
-          )
-        }
-        return (
-          <View style={pageStyle} key={i}>
-            {children[page]}
-          </View>
-        )
-      })
-    } else {
-      pages = (
-        <View style={pageStyle} key={0}>
-          {children}
-        </View>
-      )
-    }
+    const pages = this.getPagesToRender()
 
     return (
       <View style={[styles.container, containerStyle]} onLayout={this.onLayout}>
@@ -678,7 +674,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
         {showsPagination
           ? renderPagination
-            ? renderPagination(index, total, this)
+            ? renderPagination(this.state.index, total, this)
             : this.renderPagination()
           : null}
 
