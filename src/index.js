@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
 type State = {
   autoplayEnd: boolean,
   offset: Object,
-  total: number,
   index: number,
   dir: 'x' | 'y',
   width: number,
@@ -186,9 +185,11 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       clearTimeout(this.autoplayTimer)
     }
 
-    this.setState(
-      this.getInitialState(nextProps, this.props.index !== nextProps.index)
-    )
+    const shouldUpdateIndex =
+      this.props.index !== nextProps.index ||
+      this.getTotalSlides(this.props) !== this.getTotalSlides(nextProps)
+
+    this.setState(this.getInitialState(nextProps, shouldUpdateIndex))
   }
 
   componentDidMount() {
@@ -217,7 +218,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       ...(this.state || {})
     }
 
-    const total = props.children ? Children.toArray(props.children).length : 0
+    const total = this.getTotalSlides(props)
 
     // Default horizontal
     const dir = props.horizontal === false ? 'y' : 'x'
@@ -228,9 +229,8 @@ export default class ReactNativeSwiper extends Component<Props, State> {
         x: dir === 'x' ? width * props.index : 0,
         y: dir === 'y' ? height * props.index : 0
       },
-      total,
       index:
-        state.total === total && !updateIndex
+        !updateIndex && state.index !== undefined
           ? state.index
           : total > 1 ? Math.min(props.index, total - 1) : 0,
       dir,
@@ -244,12 +244,17 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     }
   }
 
+  getTotalSlides(props: Props) {
+    return props.children ? Children.toArray(props.children).length : 0
+  }
+
   onLayout = (event: Event) => {
     const { width, height } = event.nativeEvent.layout
     const { offset } = this.state
     const newState = { width, height }
+    const total = this.getTotalSlides(this.props)
 
-    if (this.state.total > 1) {
+    if (total > 1) {
       const setup = this.props.loop ? this.state.index + 1 : this.state.index
 
       offset[this.state.dir] = setup * (this.state.dir === 'x' ? width : height)
@@ -269,7 +274,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     // contentOffset is not working in react 0.48.x so we need to use scrollTo
     // to emulate offset.
     if (Platform.OS === 'ios') {
-      if (this.initialRender && this.state.total > 1) {
+      if (this.initialRender && total > 1) {
         if (this.scrollView) {
           this.scrollView.scrollTo({ ...offset, animated: false })
         }
@@ -296,7 +301,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    */
   autoplay = () => {
     if (
-      Children.toArray(this.props.children).length <= 1 ||
+      this.getTotalSlides(this.props) <= 1 ||
       !this.props.autoplay ||
       this.state.isScrolling ||
       this.state.autoplayEnd
@@ -312,7 +317,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       if (
         !this.props.loop &&
         (this.props.autoplayDirection
-          ? this.state.index === this.state.total - 1
+          ? this.state.index === this.getTotalSlides(this.props) - 1
           : this.state.index === 0)
       ) {
         this.setState({ autoplayEnd: true })
@@ -368,14 +373,14 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    */
   onScrollEndDrag = (e: Event) => {
     const { contentOffset } = e.nativeEvent
-    const { horizontal, children } = this.props
+    const { horizontal } = this.props
     const { index, offset } = this.state
     const previousOffset = horizontal ? offset.x : offset.y
     const newOffset = horizontal ? contentOffset.x : contentOffset.y
 
     if (
       previousOffset === newOffset &&
-      (index === 0 || index === Children.toArray(children).length - 1)
+      (index === 0 || index === this.getTotalSlides(this.props) - 1)
     ) {
       this.setState({ isScrolling: false })
     }
@@ -385,6 +390,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     const { dir } = this.state
     let { index } = this.state
     const diff = offset[dir] - this.state.offset[dir]
+    const total = this.getTotalSlides(this.props)
 
     // Do nothing if offset no change.
     if (diff === 0) return
@@ -398,9 +404,9 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
     if (this.props.loop) {
       if (index <= -1) {
-        index = this.state.total - 1
-        offset[dir] = step * this.state.total
-      } else if (index >= this.state.total) {
+        index = total - 1
+        offset[dir] = step * total
+      } else if (index >= total) {
         index = 0
         offset[dir] = step
       }
@@ -431,7 +437,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   }
 
   scrollBy = (diffFromIndex: number, animated: boolean = true) => {
-    if (this.state.isScrolling || this.state.total < 2) return
+    if (this.state.isScrolling || this.getTotalSlides(this.props) < 2) return
 
     const { scrollView } = this
     const { dir, width, height } = this.state
@@ -470,7 +476,8 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   // Ok
   renderPagination = () => {
     // By default, dots only show when `total` >= 2
-    if (this.state.total <= 1) return null
+    const total = this.getTotalSlides(this.props)
+    if (total <= 1) return null
 
     const Dot = this.props.renderDot || DefaultDot
 
@@ -485,7 +492,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
           this.props.paginationStyle
         ]}
       >
-        {arrayWithLength(this.state.total).map(index => (
+        {arrayWithLength(total).map(index => (
           <Dot key={index} active={index === this.state.index} />
         ))}
       </View>
@@ -518,7 +525,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   // Ok
   renderNextButton = () => {
     if (
-      this.state.index === this.state.total - 1 &&
+      this.state.index === this.getTotalSlides(this.props) - 1 &&
       this.props.loop === false
     ) {
       return null
@@ -600,7 +607,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    * @return {object} react-dom
    */
   render() {
-    const { index, total, width, height } = this.state
+    const { index, width, height } = this.state
     const {
       children,
       containerStyle,
@@ -612,6 +619,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       showsButtons,
       showsPagination
     } = this.props
+    const total = this.getTotalSlides(this.props)
     // let dir = this.state.dir
     // let key = 0
     const loopVal = loop ? 1 : 0
