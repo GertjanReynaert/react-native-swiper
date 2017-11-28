@@ -475,9 +475,19 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
   // Ok
   renderPagination = () => {
-    // By default, dots only show when `total` >= 2
+    if (!this.props.showsPagination) {
+      return null
+    }
+
     const total = this.getTotalSlides(this.props)
-    if (total <= 1) return null
+    if (this.props.renderPagination) {
+      return this.props.renderPagination(this.state.index, total, this)
+    }
+
+    // By default, dots only show when `total` >= 2
+    if (total <= 1) {
+      return null
+    }
 
     const Dot = this.props.renderDot || DefaultDot
 
@@ -542,6 +552,10 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
   // Ok
   renderButtons = () => {
+    if (!this.props.showsButtons) {
+      return null
+    }
+
     return (
       <View
         pointerEvents="box-none"
@@ -659,28 +673,18 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   }
 
   render() {
-    const {
-      containerStyle,
-      renderPagination,
-      showsButtons,
-      showsPagination
-    } = this.props
-    const total = this.getTotalSlides(this.props)
     const pages = this.getPagesToRender()
 
     return (
-      <View style={[styles.container, containerStyle]} onLayout={this.onLayout}>
+      <View
+        style={[styles.container, this.props.containerStyle]}
+        onLayout={this.onLayout}
+      >
         {this.renderScrollView(pages)}
 
-        {showsPagination
-          ? renderPagination
-            ? renderPagination(this.state.index, total, this)
-            : this.renderPagination()
-          : null}
-
         {this.renderTitle()}
-
-        {showsButtons ? this.renderButtons() : null}
+        {this.renderPagination()}
+        {this.renderButtons()}
       </View>
     )
   }
