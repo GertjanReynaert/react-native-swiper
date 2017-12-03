@@ -1,8 +1,4 @@
 // @flow
-/**
- * react-native-swiper
- * @author leecade<leecade@163.com>
- */
 import React, { Component, Children } from 'react'
 import {
   View,
@@ -313,25 +309,24 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       clearTimeout(this.autoplayTimer)
     }
 
-    this.autoplayTimer = setTimeout(() => {
-      if (
-        !this.props.loop &&
-        (this.props.autoplayDirection
-          ? this.state.index === this.getTotalSlides(this.props) - 1
-          : this.state.index === 0)
-      ) {
-        this.setState({ autoplayEnd: true })
-        return
-      }
-
-      this.scrollBy(this.props.autoplayDirection ? 1 : -1)
-    }, this.props.autoplayTimeout * 1000)
+    this.autoplayTimer = setTimeout(
+      this.autoPlayTick,
+      this.props.autoplayTimeout * 1000
+    )
   }
 
-  /**
-   * Scroll begin handle
-   * @param  {object} e native event
-   */
+  autoPlayTick = () => {
+    const { loop, autoplayDirection } = this.props
+
+    const maxIndex = autoplayDirection ? this.getTotalSlides(this.props) - 1 : 0
+
+    if (!loop && this.state.index === maxIndex) {
+      this.setState({ autoplayEnd: true })
+    } else {
+      this.scrollBy(autoplayDirection ? 1 : -1)
+    }
+  }
+
   onScrollBegin = (e: Event) => {
     this.setState({ isScrolling: true })
 
@@ -340,10 +335,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     }
   }
 
-  /**
-   * Scroll end handle
-   * @param  {object} e native event
-   */
   onScrollEnd = (e: Event) => {
     // update scroll state
     this.setState({ isScrolling: false })
