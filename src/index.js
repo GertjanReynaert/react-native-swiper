@@ -296,14 +296,10 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    * Automatic rolling
    */
   autoplay = () => {
-    if (
-      this.getTotalSlides(this.props) <= 1 ||
-      !this.props.autoplay ||
-      this.state.isScrolling ||
-      this.state.autoplayEnd
-    ) {
-      return
-    }
+    if (!this.props.autoplay) return
+    if (this.state.isScrolling) return
+    if (this.state.autoplayEnd) return
+    if (this.getTotalSlides(this.props) <= 1) return
 
     if (this.autoPlayTimer) {
       clearTimeout(this.autoplayTimer)
