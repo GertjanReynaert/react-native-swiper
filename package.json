@@ -80,7 +80,5 @@
     "rimraf": "^2.5.4",
     "updtr": "^2.0.0"
   },
-  "dependencies": {
-    "prop-types": "^15.5.10"
-  }
+  "dependencies": {}
 }
