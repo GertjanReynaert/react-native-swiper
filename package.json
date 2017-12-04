@@ -40,16 +40,16 @@
   },
   "homepage": "https://github.com/GertjanReynaert/react-native-swiper#readme",
   "devDependencies": {
-    "babel-eslint": "^8.0.1",
-    "eslint": "^4.11.0",
-    "eslint-config-prettier": "^2.8.0",
+    "babel-eslint": "^8.0.3",
+    "eslint": "^4.12.1",
+    "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-flowtype": "^2.39.1",
     "eslint-plugin-react": "^7.5.1",
-    "flow-bin": "^0.59.0",
-    "lint-staged": "^5.0.0",
+    "flow-bin": "^0.60.1",
+    "lint-staged": "^6.0.0",
     "pre-commit": "^1.2.2",
     "prettier": "1.8.2",
-    "rimraf": "^2.5.4"
+    "rimraf": "^2.6.2"
   },
   "dependencies": {}
 }
