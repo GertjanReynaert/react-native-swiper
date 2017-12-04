@@ -15,31 +15,7 @@
     "format:md": "prettier --write --parser markdown --single-quote '*.md'",
     "precommit": "lint-staged",
     "update": "updtr",
-    "test": "npm run lint"
-  },
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "plugins": ["react", "flowtype"],
-    "extends": [
-      "plugin:react/recommended",
-      "plugin:flowtype/recommended",
-      "prettier"
-    ],
-    "env": {
-      "es6": true,
-      "browser": true,
-      "node": true,
-      "jest": true
-    },
-    "parserOptions": {
-      "sourceType": "module",
-      "ecmaFeatures": {
-        "jsx": true
-      }
-    },
-    "globals": {
-      "__DEV__": true
-    }
+    "test": "npm run lint && npm run typecheck"
   },
   "pre-commit": "precommit",
   "lint-staged": {
