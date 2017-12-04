@@ -1,6 +1,13 @@
 {
   "name": "react-native-swiper",
-  "keywords": ["react-component", "react-native", "ios"],
+  "keywords": [
+    "react-native",
+    "swiper",
+    "ios",
+    "UIPageControl",
+    "android",
+    "ViewPager"
+  ],
   "version": "1.5.13",
   "description": "Swiper component for React Native.",
   "main": "index.js",
@@ -14,7 +21,6 @@
     "format:json": "prettier --write --parser json '*.json' 'examples/*.json'",
     "format:md": "prettier --write --parser markdown --single-quote '*.md'",
     "precommit": "lint-staged",
-    "update": "updtr",
     "test": "npm run lint && npm run typecheck"
   },
   "pre-commit": "precommit",
@@ -43,8 +49,7 @@
     "lint-staged": "^5.0.0",
     "pre-commit": "^1.2.2",
     "prettier": "1.8.2",
-    "rimraf": "^2.5.4",
-    "updtr": "^2.0.0"
+    "rimraf": "^2.5.4"
   },
   "dependencies": {}
 }
