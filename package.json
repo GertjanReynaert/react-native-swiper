@@ -52,10 +52,6 @@
     "*.json": ["prettier --write --parser json", "git add"],
     "*.md": ["prettier --write --parser markdown", "git add"]
   },
-  "ava": {
-    "babel": "inherit",
-    "require": []
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leecade/react-native-swiper.git"
