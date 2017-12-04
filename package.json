@@ -54,14 +54,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leecade/react-native-swiper.git"
+    "url": "git+https://github.com/GertjanReynaert/react-native-swiper.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Gertjan Reynaert",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/leecade/react-native-swiper/issues"
+    "url": "https://github.com/GertjanReynaert/react-native-swiper/issues"
   },
-  "homepage": "https://github.com/leecade/react-native-swiper#readme",
+  "homepage": "https://github.com/GertjanReynaert/react-native-swiper#readme",
   "devDependencies": {
     "babel-eslint": "^8.0.1",
     "eslint": "^4.11.0",
