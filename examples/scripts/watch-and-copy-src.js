@@ -4,7 +4,7 @@ const watch = require("node-watch");
 const rimraf = require("rimraf");
 const minimatch = require("minimatch");
 
-function copyAndWatch(source, destination, fileGlob) {
+const copyAndWatch = (source, destination, fileGlob) => {
   console.log(`Cleaning "${destination}"`);
   rimraf(destination, () => {
     console.log(`Copying "${source}" to "${destination}"`);
@@ -13,7 +13,7 @@ function copyAndWatch(source, destination, fileGlob) {
     });
 
     console.log(`Watching "${source}"`);
-    watch(source, filename => {
+    watch(source, (evt, filename) => {
       const localPath = filename.split(source).pop();
       if (matchesFile(localPath, fileGlob)) {
         const destinationPath = `${destination}${localPath}`;
@@ -24,7 +24,7 @@ function copyAndWatch(source, destination, fileGlob) {
       }
     });
   });
-}
+};
 
 function matchesFile(filename, fileGlob) {
   if (fileGlob == null) return true;
