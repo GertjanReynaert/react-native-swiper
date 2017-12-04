@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import { View, Image, StatusBar, Dimensions } from 'react-native'
-import Swiper from 'react-native-swiper'
-const { width, height } = Dimensions.get('window')
+import React, { Component } from "react";
+import { View, Image, StatusBar, Dimensions } from "react-native";
+import Swiper from "react-native-swiper";
+const { width, height } = Dimensions.get("window");
 
 const styles = {
   wrapper: {
@@ -10,7 +10,7 @@ const styles = {
 
   slide: {
     flex: 1,
-    backgroundColor: 'transparent'
+    backgroundColor: "transparent"
   },
   container: {
     flex: 1
@@ -19,28 +19,28 @@ const styles = {
   imgBackground: {
     width,
     height,
-    backgroundColor: 'transparent',
-    position: 'absolute'
+    backgroundColor: "transparent",
+    position: "absolute"
   },
 
   image: {
     width,
     height
   }
-}
+};
 
 export default class Phone extends Component {
   render() {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <Image source={require('./img/bg.jpg')} style={styles.imgBackground} />
+        <Image source={require("./img/bg.jpg")} style={styles.imgBackground} />
         <Swiper
           style={styles.wrapper}
           dot={
             <View
               style={{
-                backgroundColor: 'rgba(255,255,255,.3)',
+                backgroundColor: "rgba(255,255,255,.3)",
                 width: 13,
                 height: 13,
                 borderRadius: 7,
@@ -52,7 +52,7 @@ export default class Phone extends Component {
           activeDot={
             <View
               style={{
-                backgroundColor: '#fff',
+                backgroundColor: "#fff",
                 width: 13,
                 height: 13,
                 borderRadius: 7,
@@ -69,22 +69,22 @@ export default class Phone extends Component {
           <View style={styles.slide}>
             <Image
               style={styles.image}
-              source={require('./img/1.jpg')}
+              source={require("./img/1.jpg")}
               resizeMode="cover"
             />
           </View>
           <View style={styles.slide}>
             <Image
               style={styles.image}
-              source={require('./img/2.jpg')}
+              source={require("./img/2.jpg")}
               resizeMode="cover"
             />
           </View>
           <View style={styles.slide}>
-            <Image style={styles.image} source={require('./img/3.jpg')} />
+            <Image style={styles.image} source={require("./img/3.jpg")} />
           </View>
         </Swiper>
       </View>
-    )
+    );
   }
 }

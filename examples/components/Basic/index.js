@@ -1,33 +1,33 @@
-import React from 'react'
-import { Text, View } from 'react-native'
-import Swiper from 'react-native-swiper'
+import React from "react";
+import { Text, View } from "react-native";
+import Swiper from "react-native-swiper";
 
 var styles = {
   wrapper: {},
   slide1: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#9DD6EB'
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#9DD6EB"
   },
   slide2: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#97CAE5'
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#97CAE5"
   },
   slide3: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#92BBD9'
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#92BBD9"
   },
   text: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 30,
-    fontWeight: 'bold'
+    fontWeight: "bold"
   }
-}
+};
 
 const Basic = () => (
   <Swiper style={styles.wrapper} showsButtons>
@@ -41,8 +41,8 @@ const Basic = () => (
       <Text style={styles.text}>And simple</Text>
     </View>
   </Swiper>
-)
+);
 
-Basic.displayName = 'Basic'
+Basic.displayName = "Basic";
 
-export default Basic
+export default Basic;

@@ -1,6 +1,6 @@
 // @flow
-import React, { Component } from 'react'
-import { View, StyleSheet } from 'react-native'
+import React, { Component } from "react";
+import { View, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   dot: {
@@ -12,23 +12,23 @@ const styles = StyleSheet.create({
     marginTop: 3,
     marginBottom: 3
   }
-})
+});
 
 type Props = {
   active: boolean
-}
+};
 
 export default class Dot extends Component<Props> {
   render() {
-    const { active } = this.props
+    const { active } = this.props;
 
     return (
       <View
         style={[
           styles.dot,
-          { backgroundColor: active ? '#007aff' : 'rgba(0,0,0,.2)' }
+          { backgroundColor: active ? "#007aff" : "rgba(0,0,0,.2)" }
         ]}
       />
-    )
+    );
   }
 }
