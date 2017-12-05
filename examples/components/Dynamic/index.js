@@ -1,5 +1,7 @@
+// @flow
 import React, { Component } from "react";
 import { Text, View, StyleSheet } from "react-native";
+import type { StyleObj } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 import Swiper from "react-native-swiper";
 
 const styles = StyleSheet.create({
@@ -31,8 +33,13 @@ const styles = StyleSheet.create({
   }
 });
 
-export default class Dynamic extends Component {
-  constructor(props) {
+type Props = {};
+type State = {
+  items: Array<{ title: string, css: StyleObj }>
+};
+
+export default class Dynamic extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     this.state = {

@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from "react";
 import { Text, View, Image, Dimensions, StyleSheet } from "react-native";
 import Swiper from "react-native-swiper";
@@ -70,7 +71,9 @@ const styles = StyleSheet.create({
   }
 });
 
-export default class SwiperDemo extends Component {
+type Props = {};
+
+export default class SwiperDemo extends Component<Props> {
   render() {
     return (
       <View style={styles.container}>

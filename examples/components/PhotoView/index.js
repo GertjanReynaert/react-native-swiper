@@ -79,7 +79,11 @@ const renderPagination = (index, total) => {
   );
 };
 
-const Viewer = (props: { index: number, imgList: Array<string> }) => (
+const Viewer = (props: {
+  index: number,
+  imgList: Array<string>,
+  pressHandle: () => void
+}) => (
   <Swiper
     index={props.index}
     style={styles.wrapper}
@@ -102,8 +106,15 @@ const Viewer = (props: { index: number, imgList: Array<string> }) => (
   </Swiper>
 );
 
-export default class PhotoViewExample extends Component {
-  constructor(props) {
+type Props = {};
+type State = {
+  imgList: Array<string>,
+  showViewer: boolean,
+  showIndex: number
+};
+
+export default class PhotoViewExample extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       imgList: [
@@ -122,7 +133,7 @@ export default class PhotoViewExample extends Component {
     });
   };
 
-  thumbPressHandle = i => {
+  thumbPressHandle = (i: number) => {
     this.setState({
       showIndex: i,
       showViewer: true

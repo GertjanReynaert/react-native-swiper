@@ -40,13 +40,13 @@ const styles = StyleSheet.create({
   }
 });
 
-type Props = {
+type SlideProps = {
   loadHandle: () => void,
   uri: string,
   loaded: boolean
 };
 
-class Slide extends Component<Props> {
+class Slide extends Component<SlideProps> {
   render() {
     return (
       <View style={styles.slide}>
@@ -66,8 +66,14 @@ class Slide extends Component<Props> {
   }
 }
 
-export default class LoadMinimal extends Component {
-  constructor(props) {
+type Props = {};
+type State = {
+  imgList: Array<string>,
+  loadQueue: Array<boolean>
+};
+
+export default class LoadMinimal extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -81,7 +87,7 @@ export default class LoadMinimal extends Component {
     };
   }
 
-  loadHandle = i => {
+  loadHandle = (i: number) => {
     let loadQueue = this.state.loadQueue;
     loadQueue[i] = true;
     this.setState({

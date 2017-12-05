@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from "react";
 import { Text, View, Image, Dimensions, StyleSheet } from "react-native";
 import Swiper from "react-native-swiper";
@@ -39,7 +40,9 @@ const renderPagination = (index, total, context) => {
   );
 };
 
-export default class SwiperNumber extends Component {
+type Props = {};
+
+export default class SwiperNumber extends Component<Props> {
   render() {
     return (
       <Swiper renderPagination={renderPagination} loop={false}>

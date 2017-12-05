@@ -1,3 +1,4 @@
+// @flow
 export { default } from "./components/Basic/";
 // export { default }  from './components/Dynamic/';
 // export { default } from './components/LoadMinimal/'

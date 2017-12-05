@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import Swiper from "react-native-swiper";
@@ -24,7 +25,9 @@ var styles = StyleSheet.create({
   }
 });
 
-export default class Basic extends Component {
+type Props = {};
+
+export default class Basic extends Component<Props> {
   render() {
     return (
       <Swiper showsButtons>
