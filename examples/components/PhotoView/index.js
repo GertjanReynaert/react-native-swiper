@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from "react";
 import {
   Text,
@@ -5,13 +6,15 @@ import {
   Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Dimensions
+  Dimensions,
+  StyleSheet
 } from "react-native";
 import Swiper from "react-native-swiper";
 import PhotoView from "react-native-photo-view";
+
 const { width, height } = Dimensions.get("window");
 
-var styles = {
+var styles = StyleSheet.create({
   wrapper: {
     backgroundColor: "#000",
     top: 0,
@@ -23,6 +26,24 @@ var styles = {
     flex: 1,
     justifyContent: "center",
     alignItems: "center"
+  },
+  paginationWrapper: {
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    top: 25,
+    left: 0,
+    right: 0
+  },
+  paginationTextContainer: {
+    borderRadius: 7,
+    backgroundColor: "rgba(255,255,255,.15)",
+    padding: 3,
+    paddingHorizontal: 7
+  },
+  paginationText: {
+    color: "#fff",
+    fontSize: 14
   },
   photo: {
     width,
@@ -44,34 +65,13 @@ var styles = {
     width: 50,
     height: 50
   }
-};
+});
 
-const renderPagination = (index, total, context) => {
+const renderPagination = (index, total) => {
   return (
-    <View
-      style={{
-        position: "absolute",
-        justifyContent: "center",
-        alignItems: "center",
-        top: 25,
-        left: 0,
-        right: 0
-      }}
-    >
-      <View
-        style={{
-          borderRadius: 7,
-          backgroundColor: "rgba(255,255,255,.15)",
-          padding: 3,
-          paddingHorizontal: 7
-        }}
-      >
-        <Text
-          style={{
-            color: "#fff",
-            fontSize: 14
-          }}
-        >
+    <View style={styles.paginationWrapper}>
+      <View style={styles.paginationTextContainer}>
+        <Text style={styles.paginationText}>
           {index + 1} / {total}
         </Text>
       </View>
@@ -79,7 +79,7 @@ const renderPagination = (index, total, context) => {
   );
 };
 
-const Viewer = props => (
+const Viewer = (props: { index: number, imgList: Array<string> }) => (
   <Swiper
     index={props.index}
     style={styles.wrapper}
@@ -87,7 +87,7 @@ const Viewer = props => (
   >
     {props.imgList.map((item, i) => (
       <View key={i} style={styles.slide}>
-        <TouchableWithoutFeedback onPress={e => props.pressHandle()}>
+        <TouchableWithoutFeedback onPress={() => props.pressHandle()}>
           <PhotoView
             source={{ uri: item }}
             resizeMode="contain"
@@ -102,7 +102,7 @@ const Viewer = props => (
   </Swiper>
 );
 
-export default class extends Component {
+export default class PhotoViewExample extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -114,33 +114,35 @@ export default class extends Component {
       showViewer: true,
       showIndex: 0
     };
-    this.viewerPressHandle = this.viewerPressHandle.bind(this);
-    this.thumbPressHandle = this.thumbPressHandle.bind(this);
   }
-  viewerPressHandle() {
+
+  viewerPressHandle = () => {
     this.setState({
       showViewer: false
     });
-  }
-  thumbPressHandle(i) {
+  };
+
+  thumbPressHandle = i => {
     this.setState({
       showIndex: i,
       showViewer: true
     });
-  }
+  };
+
   render() {
     return (
       <View style={{ position: "relative" }}>
-        {this.state.showViewer && (
+        {this.state.showViewer ? (
           <Viewer
             index={this.state.showIndex}
             pressHandle={this.viewerPressHandle}
             imgList={this.state.imgList}
           />
-        )}
+        ) : null}
+
         <View style={styles.thumbWrap}>
           {this.state.imgList.map((item, i) => (
-            <TouchableOpacity key={i} onPress={e => this.thumbPressHandle(i)}>
+            <TouchableOpacity key={i} onPress={() => this.thumbPressHandle(i)}>
               <Image style={styles.thumb} source={{ uri: item }} />
             </TouchableOpacity>
           ))}

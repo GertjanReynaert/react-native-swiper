@@ -1,10 +1,15 @@
+// @flow
 import React, { Component } from "react";
-import { Text, View, Image, Dimensions } from "react-native";
+import { Text, View, Image, Dimensions, StyleSheet } from "react-native";
 import Swiper from "react-native-swiper";
-const { width } = Dimensions.get("window");
-const loading = require("./img/loading.gif");
+import loading from "./img/loading.gif";
 
-const styles = {
+const { width } = Dimensions.get("window");
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
   wrapper: {},
 
   slide: {
@@ -33,28 +38,38 @@ const styles = {
     width: 60,
     height: 60
   }
+});
+
+type Props = {
+  loadHandle: () => void,
+  uri: string,
+  loaded: boolean
 };
 
-const Slide = props => {
-  return (
-    <View style={styles.slide}>
-      <Image
-        onLoad={props.loadHandle.bind(null, props.i)}
-        style={styles.image}
-        source={{ uri: props.uri }}
-      />
-      {!props.loaded && (
-        <View style={styles.loadingView}>
-          <Image style={styles.loadingImage} source={loading} />
-        </View>
-      )}
-    </View>
-  );
-};
+class Slide extends Component<Props> {
+  render() {
+    return (
+      <View style={styles.slide}>
+        <Image
+          onLoad={this.props.loadHandle}
+          style={styles.image}
+          source={{ uri: this.props.uri }}
+        />
 
-export default class extends Component {
+        {this.props.loaded ? null : (
+          <View style={styles.loadingView}>
+            <Image style={styles.loadingImage} source={loading} />
+          </View>
+        )}
+      </View>
+    );
+  }
+}
+
+export default class LoadMinimal extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       imgList: [
         "https://gitlab.pro/yuji/demo/uploads/d6133098b53fe1a5f3c5c00cf3c2d670/DVrj5Hz.jpg_1",
@@ -62,20 +77,21 @@ export default class extends Component {
         "https://gitlab.pro/yuji/demo/uploads/4421f77012d43a0b4e7cfbe1144aac7c/XFVzKhq.jpg",
         "https://gitlab.pro/yuji/demo/uploads/576ef91941b0bda5761dde6914dae9f0/kD3eeHe.jpg"
       ],
-      loadQueue: [0, 0, 0, 0]
+      loadQueue: [false, false, false, false]
     };
-    this.loadHandle = this.loadHandle.bind(this);
   }
-  loadHandle(i) {
+
+  loadHandle = i => {
     let loadQueue = this.state.loadQueue;
-    loadQueue[i] = 1;
+    loadQueue[i] = true;
     this.setState({
       loadQueue
     });
-  }
+  };
+
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
         <Swiper
           loadMinimal
           loadMinimalSize={1}
@@ -84,11 +100,10 @@ export default class extends Component {
         >
           {this.state.imgList.map((item, i) => (
             <Slide
-              loadHandle={this.loadHandle}
-              loaded={!!this.state.loadQueue[i]}
-              uri={item}
-              i={i}
               key={i}
+              uri={item}
+              loaded={this.state.loadQueue[i]}
+              loadHandle={() => this.loadHandle(i)}
             />
           ))}
         </Swiper>

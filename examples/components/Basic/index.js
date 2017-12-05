@@ -1,25 +1,20 @@
-import React from "react";
-import { Text, View } from "react-native";
+import React, { Component } from "react";
+import { Text, View, StyleSheet } from "react-native";
 import Swiper from "react-native-swiper";
 
-var styles = {
-  wrapper: {},
-  slide1: {
+var styles = StyleSheet.create({
+  slide: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
+  },
+  slide1: {
     backgroundColor: "#9DD6EB"
   },
   slide2: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "#97CAE5"
   },
   slide3: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "#92BBD9"
   },
   text: {
@@ -27,22 +22,24 @@ var styles = {
     fontSize: 30,
     fontWeight: "bold"
   }
-};
+});
 
-const Basic = () => (
-  <Swiper style={styles.wrapper} showsButtons>
-    <View style={styles.slide1}>
-      <Text style={styles.text}>Hello Swiper</Text>
-    </View>
-    <View style={styles.slide2}>
-      <Text style={styles.text}>Beautiful</Text>
-    </View>
-    <View style={styles.slide3}>
-      <Text style={styles.text}>And simple</Text>
-    </View>
-  </Swiper>
-);
+export default class Basic extends Component {
+  render() {
+    return (
+      <Swiper showsButtons>
+        <View style={[styles.slide, styles.slide1]}>
+          <Text style={styles.text}>Hello Swiper</Text>
+        </View>
 
-Basic.displayName = "Basic";
+        <View style={[styles.slide, styles.slide2]}>
+          <Text style={styles.text}>Beautiful</Text>
+        </View>
 
-export default Basic;
+        <View style={[styles.slide, styles.slide3]}>
+          <Text style={styles.text}>And simple</Text>
+        </View>
+      </Swiper>
+    );
+  }
+}
