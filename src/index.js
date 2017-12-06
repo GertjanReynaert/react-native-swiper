@@ -126,12 +126,12 @@ type Props = {
 };
 
 type State = {
-  autoplayEnd: boolean,
-  offset: number,
   index: number,
+  offset: number,
   width: number,
   height: number,
-  isScrolling: boolean
+  isScrolling: boolean,
+  autoplayEnd: boolean
 };
 
 export default class ReactNativeSwiper extends Component<Props, State> {
