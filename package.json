@@ -25,9 +25,9 @@
   },
   "pre-commit": "precommit",
   "lint-staged": {
-    "*.js": ["prettier --write", "eslint", "git add"],
+    "*.js": ["prettier --write --single-quote", "eslint", "git add"],
     "*.json": ["prettier --write --parser json", "git add"],
-    "*.md": ["prettier --write --parser markdown", "git add"]
+    "*.md": ["prettier --write --single-quote --parser markdown", "git add"]
   },
   "repository": {
     "type": "git",

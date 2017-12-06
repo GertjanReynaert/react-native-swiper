@@ -1,10 +1,10 @@
 // @flow
-import React, { Component } from "react";
-import { Text, View, Image, Dimensions, StyleSheet } from "react-native";
-import Swiper from "react-native-swiper";
-import loading from "./img/loading.gif";
+import React, { Component } from 'react';
+import { Text, View, Image, Dimensions, StyleSheet } from 'react-native';
+import Swiper from 'react-native-swiper';
+import loading from './img/loading.gif';
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -14,24 +14,24 @@ const styles = StyleSheet.create({
 
   slide: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "transparent"
+    justifyContent: 'center',
+    backgroundColor: 'transparent'
   },
   image: {
     width,
     flex: 1,
-    backgroundColor: "transparent"
+    backgroundColor: 'transparent'
   },
 
   loadingView: {
-    position: "absolute",
-    justifyContent: "center",
-    alignItems: "center",
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
     left: 0,
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,.5)"
+    backgroundColor: 'rgba(0,0,0,.5)'
   },
 
   loadingImage: {
@@ -78,10 +78,10 @@ export default class LoadMinimal extends Component<Props, State> {
 
     this.state = {
       imgList: [
-        "https://gitlab.pro/yuji/demo/uploads/d6133098b53fe1a5f3c5c00cf3c2d670/DVrj5Hz.jpg_1",
-        "https://gitlab.pro/yuji/demo/uploads/2d5122a2504e5cbdf01f4fcf85f2594b/Mwb8VWH.jpg",
-        "https://gitlab.pro/yuji/demo/uploads/4421f77012d43a0b4e7cfbe1144aac7c/XFVzKhq.jpg",
-        "https://gitlab.pro/yuji/demo/uploads/576ef91941b0bda5761dde6914dae9f0/kD3eeHe.jpg"
+        'https://gitlab.pro/yuji/demo/uploads/d6133098b53fe1a5f3c5c00cf3c2d670/DVrj5Hz.jpg_1',
+        'https://gitlab.pro/yuji/demo/uploads/2d5122a2504e5cbdf01f4fcf85f2594b/Mwb8VWH.jpg',
+        'https://gitlab.pro/yuji/demo/uploads/4421f77012d43a0b4e7cfbe1144aac7c/XFVzKhq.jpg',
+        'https://gitlab.pro/yuji/demo/uploads/576ef91941b0bda5761dde6914dae9f0/kD3eeHe.jpg'
       ],
       loadQueue: [false, false, false, false]
     };

@@ -1,27 +1,27 @@
 // @flow
-import React, { Component } from "react";
-import { Text, View, StyleSheet } from "react-native";
-import Swiper from "react-native-swiper";
+import React, { Component } from 'react';
+import { Text, View, StyleSheet } from 'react-native';
+import Swiper from 'react-native-swiper';
 
 var styles = StyleSheet.create({
   slide: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   slide1: {
-    backgroundColor: "#9DD6EB"
+    backgroundColor: '#9DD6EB'
   },
   slide2: {
-    backgroundColor: "#97CAE5"
+    backgroundColor: '#97CAE5'
   },
   slide3: {
-    backgroundColor: "#92BBD9"
+    backgroundColor: '#92BBD9'
   },
   text: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 30,
-    fontWeight: "bold"
+    fontWeight: 'bold'
   }
 });
 

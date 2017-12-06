@@ -1,34 +1,34 @@
 // @flow
-import React, { Component } from "react";
-import { View, Image, StatusBar, Dimensions, StyleSheet } from "react-native";
-import Swiper from "react-native-swiper";
-import backgroundImage from "./img/bg.jpg";
-import image1 from "./img/1.jpg";
-import image2 from "./img/2.jpg";
-import image3 from "./img/3.jpg";
+import React, { Component } from 'react';
+import { View, Image, StatusBar, Dimensions, StyleSheet } from 'react-native';
+import Swiper from 'react-native-swiper';
+import backgroundImage from './img/bg.jpg';
+import image1 from './img/1.jpg';
+import image2 from './img/2.jpg';
+import image3 from './img/3.jpg';
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   wrapper: {},
 
   slide: {
     flex: 1,
-    backgroundColor: "transparent"
+    backgroundColor: 'transparent'
   },
   container: {
     flex: 1
   },
 
   backgroundImage: {
-    position: "absolute",
+    position: 'absolute',
     width,
     height,
-    backgroundColor: "transparent"
+    backgroundColor: 'transparent'
   },
 
   dot: {
-    backgroundColor: "rgba(255,255,255,.3)",
+    backgroundColor: 'rgba(255,255,255,.3)',
     width: 13,
     height: 13,
     borderRadius: 7,
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   },
 
   activeDot: {
-    backgroundColor: "#fff"
+    backgroundColor: '#fff'
   },
 
   pagination: {

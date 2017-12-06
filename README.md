@@ -132,35 +132,35 @@ $ react-native init myproject
 * Then, edit `myproject/index.ios.js`, like this:
 
 ```jsx
-import React, { Component } from "react";
-import { AppRegistry, StyleSheet, Text, View } from "react-native";
+import React, { Component } from 'react';
+import { AppRegistry, StyleSheet, Text, View } from 'react-native';
 
-import Swiper from "react-native-swiper";
+import Swiper from 'react-native-swiper';
 
 var styles = StyleSheet.create({
   wrapper: {},
   slide1: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#9DD6EB"
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#9DD6EB'
   },
   slide2: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#97CAE5"
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#97CAE5'
   },
   slide3: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#92BBD9"
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#92BBD9'
   },
   text: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 30,
-    fontWeight: "bold"
+    fontWeight: 'bold'
   }
 });
 
@@ -182,7 +182,7 @@ var swiper = React.createClass({
   }
 });
 
-AppRegistry.registerComponent("myproject", () => swiper);
+AppRegistry.registerComponent('myproject', () => swiper);
 ```
 
 ### Properties

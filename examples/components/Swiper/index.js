@@ -1,14 +1,14 @@
 // @flow
-import React, { Component } from "react";
-import { Text, View, Image, Dimensions, StyleSheet } from "react-native";
-import Swiper from "react-native-swiper";
+import React, { Component } from 'react';
+import { Text, View, Image, Dimensions, StyleSheet } from 'react-native';
+import Swiper from 'react-native-swiper';
 
-import image1 from "./img/1.jpg";
-import image2 from "./img/2.jpg";
-import image3 from "./img/3.jpg";
-import image4 from "./img/4.jpg";
+import image1 from './img/1.jpg';
+import image2 from './img/2.jpg';
+import image3 from './img/3.jpg';
+import image4 from './img/4.jpg';
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -17,12 +17,12 @@ const styles = StyleSheet.create({
 
   imageSlide: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "transparent"
+    justifyContent: 'center',
+    backgroundColor: 'transparent'
   },
 
   dot: {
-    backgroundColor: "rgba(0,0,0,.2)",
+    backgroundColor: 'rgba(0,0,0,.2)',
     width: 5,
     height: 5,
     borderRadius: 4,
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
 
   activeDot: {
-    backgroundColor: "#000",
+    backgroundColor: '#000',
     width: 8,
     height: 8
   },
@@ -46,23 +46,23 @@ const styles = StyleSheet.create({
 
   textSlide: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   slide1: {
-    backgroundColor: "#9DD6EB"
+    backgroundColor: '#9DD6EB'
   },
   slide2: {
-    backgroundColor: "#97CAE5"
+    backgroundColor: '#97CAE5'
   },
   slide3: {
-    backgroundColor: "#92BBD9"
+    backgroundColor: '#92BBD9'
   },
 
   text: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 30,
-    fontWeight: "bold"
+    fontWeight: 'bold'
   },
 
   image: {
@@ -94,7 +94,7 @@ export default class SwiperDemo extends Component<Props> {
         <Swiper
           height={240}
           onMomentumScrollEnd={(e, state, context) =>
-            console.log("index:", state.index)
+            console.log('index:', state.index)
           }
           dot={<View style={styles.dot} />}
           activeDot={<View style={[styles.dot, styles.activeDot]} />}

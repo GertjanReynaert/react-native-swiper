@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Children } from "react";
+import React, { Component, Children } from 'react';
 import {
   View,
   ScrollView,
@@ -8,83 +8,83 @@ import {
   Platform,
   ActivityIndicator,
   StyleSheet
-} from "react-native";
-import type { Event } from "react-native";
-import type { StyleObj } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
-import DefaultDot from "./Dot";
-import DefaultButton from "./Button";
+} from 'react-native';
+import type { Event } from 'react-native';
+import type { StyleObj } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
+import DefaultDot from './Dot';
+import DefaultButton from './Button';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "transparent",
-    position: "relative",
+    backgroundColor: 'transparent',
+    position: 'relative',
     flex: 1
   },
 
   wrapperIOS: {
-    backgroundColor: "transparent"
+    backgroundColor: 'transparent'
   },
 
   wrapperAndroid: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     flex: 1
   },
 
   slide: {
-    backgroundColor: "transparent"
+    backgroundColor: 'transparent'
   },
 
   loading: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   pagination: {
-    position: "absolute",
+    position: 'absolute',
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "transparent"
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent'
   },
 
   pagination_x: {
     bottom: 25,
     left: 0,
     right: 0,
-    flexDirection: "row"
+    flexDirection: 'row'
   },
 
   pagination_y: {
     right: 15,
     top: 0,
     bottom: 0,
-    flexDirection: "column"
+    flexDirection: 'column'
   },
 
   title: {
     height: 30,
-    justifyContent: "center",
-    position: "absolute",
+    justifyContent: 'center',
+    position: 'absolute',
     paddingLeft: 10,
     bottom: -30,
     left: 0,
-    flexWrap: "nowrap",
+    flexWrap: 'nowrap',
     width: 250,
-    backgroundColor: "transparent"
+    backgroundColor: 'transparent'
   },
 
   buttonWrapper: {
-    backgroundColor: "transparent",
-    flexDirection: "row",
-    position: "absolute",
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    position: 'absolute',
     top: 0,
     left: 0,
     flex: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    justifyContent: "space-between",
-    alignItems: "center"
+    justifyContent: 'space-between',
+    alignItems: 'center'
   }
 });
 
@@ -92,7 +92,7 @@ type State = {
   autoplayEnd: boolean,
   offset: Object,
   index: number,
-  dir: "x" | "y",
+  dir: 'x' | 'y',
   width: number,
   height: number,
   isScrolling: boolean
@@ -205,7 +205,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
   // Ok
   getInitialState(props: Props, updateIndex: boolean = false) {
-    const { width, height } = Dimensions.get("window");
+    const { width, height } = Dimensions.get('window');
     // set the current state
     const state = {
       width: 0,
@@ -217,13 +217,13 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     const total = this.getTotalSlides(props);
 
     // Default horizontal
-    const dir = props.horizontal === false ? "y" : "x";
+    const dir = props.horizontal === false ? 'y' : 'x';
 
     return {
       autoplayEnd: false,
       offset: {
-        x: dir === "x" ? width * props.index : 0,
-        y: dir === "y" ? height * props.index : 0
+        x: dir === 'x' ? width * props.index : 0,
+        y: dir === 'y' ? height * props.index : 0
       },
       index:
         !updateIndex && state.index !== undefined
@@ -254,7 +254,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       const setup = this.props.loop ? this.state.index + 1 : this.state.index;
 
       offset[this.state.dir] =
-        setup * (this.state.dir === "x" ? width : height);
+        setup * (this.state.dir === 'x' ? width : height);
     }
 
     // only update the offset in state if needed, updating offset while swiping
@@ -270,7 +270,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     // related to https://github.com/leecade/react-native-swiper/issues/570
     // contentOffset is not working in react 0.48.x so we need to use scrollTo
     // to emulate offset.
-    if (Platform.OS === "ios") {
+    if (Platform.OS === 'ios') {
       if (this.initialRender && total > 1) {
         if (this.scrollView) {
           this.scrollView.scrollTo({ ...offset, animated: false });
@@ -343,7 +343,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
     // making our events coming from android compatible to updateIndex logic
     const offset =
-      contentOffset || dir === "x"
+      contentOffset || dir === 'x'
         ? { x: position * width }
         : { y: position * height };
 
@@ -385,7 +385,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     // Do nothing if offset no change.
     if (diff === 0) return;
 
-    const step = dir === "x" ? this.state.width : this.state.height;
+    const step = dir === 'x' ? this.state.width : this.state.height;
 
     // Note: if touch very very quickly and continuous,
     // the variation of `index` more than 1.
@@ -433,11 +433,11 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     const { dir, width, height } = this.state;
     const diff = (this.props.loop ? 1 : 0) + diffFromIndex + this.state.index;
 
-    const x = dir === "x" ? diff * width : 0;
-    const y = dir === "y" ? diff * height : 0;
+    const x = dir === 'x' ? diff * width : 0;
+    const y = dir === 'y' ? diff * height : 0;
 
     if (scrollView) {
-      if (Platform.OS === "ios") {
+      if (Platform.OS === 'ios') {
         scrollView.scrollTo({ x, y, animated });
       } else if (animated) {
         scrollView.setPage(diff);
@@ -452,7 +452,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     });
 
     // trigger onScrollEnd manually in android
-    if (!animated || Platform.OS !== "ios") {
+    if (!animated || Platform.OS !== 'ios') {
       setImmediate(() => {
         this.onScrollEnd({
           nativeEvent: {
@@ -488,7 +488,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
         pointerEvents="none"
         style={[
           styles.pagination,
-          this.state.dir === "x" ? styles.pagination_x : styles.pagination_y,
+          this.state.dir === 'x' ? styles.pagination_x : styles.pagination_y,
           this.props.paginationStyle
         ]}
       >
@@ -628,7 +628,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   };
 
   renderScrollView = (pages: any) => {
-    if (Platform.OS === "ios") {
+    if (Platform.OS === 'ios') {
       return (
         <ScrollView
           ref={this.setScrollViewRef}

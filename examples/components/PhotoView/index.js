@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -8,15 +8,15 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   StyleSheet
-} from "react-native";
-import Swiper from "react-native-swiper";
-import PhotoView from "react-native-photo-view";
+} from 'react-native';
+import Swiper from 'react-native-swiper';
+import PhotoView from 'react-native-photo-view';
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window');
 
 var styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: "#000",
+    backgroundColor: '#000',
     top: 0,
     right: 0,
     bottom: 0,
@@ -24,25 +24,25 @@ var styles = StyleSheet.create({
   },
   slide: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   paginationWrapper: {
-    position: "absolute",
-    justifyContent: "center",
-    alignItems: "center",
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
     top: 25,
     left: 0,
     right: 0
   },
   paginationTextContainer: {
     borderRadius: 7,
-    backgroundColor: "rgba(255,255,255,.15)",
+    backgroundColor: 'rgba(255,255,255,.15)',
     padding: 3,
     paddingHorizontal: 7
   },
   paginationText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 14
   },
   photo: {
@@ -51,15 +51,15 @@ var styles = StyleSheet.create({
     flex: 1
   },
   text: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 30,
-    fontWeight: "bold"
+    fontWeight: 'bold'
   },
   thumbWrap: {
     marginTop: 100,
     borderWidth: 5,
-    borderColor: "#000",
-    flexDirection: "row"
+    borderColor: '#000',
+    flexDirection: 'row'
   },
   thumb: {
     width: 50,
@@ -118,9 +118,9 @@ export default class PhotoViewExample extends Component<Props, State> {
     super(props);
     this.state = {
       imgList: [
-        "https://avatars3.githubusercontent.com/u/533360?v=3&s=466",
-        "https://assets-cdn.github.com/images/modules/site/business-hero.jpg",
-        "https://placeholdit.imgix.net/~text?txtsize=29&txt=350%C3%971150&w=350&h=1150"
+        'https://avatars3.githubusercontent.com/u/533360?v=3&s=466',
+        'https://assets-cdn.github.com/images/modules/site/business-hero.jpg',
+        'https://placeholdit.imgix.net/~text?txtsize=29&txt=350%C3%971150&w=350&h=1150'
       ],
       showViewer: true,
       showIndex: 0
@@ -142,7 +142,7 @@ export default class PhotoViewExample extends Component<Props, State> {
 
   render() {
     return (
-      <View style={{ position: "relative" }}>
+      <View style={{ position: 'relative' }}>
         {this.state.showViewer ? (
           <Viewer
             index={this.state.showIndex}
