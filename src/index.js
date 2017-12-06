@@ -166,11 +166,13 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     const { width, height } = Dimensions.get('window');
     const total = this.getTotalSlides(props);
 
+    const newWidth = this.props.width || width;
+
     this.state = {
       autoplayEnd: false,
-      offset: width * this.props.index,
+      offset: newWidth * this.props.index,
       index: total > 1 ? Math.min(this.props.index, total - 1) : 0,
-      width: this.props.width || width,
+      width: newWidth,
       height: this.props.height || height,
       isScrolling: false
     };
@@ -194,14 +196,16 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
     const total = this.getTotalSlides(props);
 
+    const newWidth = props.width || oldState.width || width;
+
     return {
       autoplayEnd: false,
-      offset: width * props.index,
+      offset: newWidth * props.index,
       index:
         indexChanged || amountOfSlidesChanged || oldState.index === undefined
           ? total > 1 ? Math.min(props.index, total - 1) : 0
           : oldState.index,
-      width: props.width || oldState.width || width,
+      width: newWidth,
       height: props.height || oldState.height || height,
       isScrolling: false
     };
