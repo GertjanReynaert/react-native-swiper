@@ -311,11 +311,12 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     // update scroll state
     this.setState({ isScrolling: false });
 
-    const { contentOffset, position } = e.nativeEvent;
     const { width, height } = this.state;
 
-    // making our events coming from android compatible to updateIndex logic
-    const offset = contentOffset.x || position * width;
+    const offset =
+      Platform.OS === 'iOS'
+        ? e.nativeEvent.contentOffset.x
+        : e.nativeEvent.position * width;
 
     this.updateIndex(offset, () => {
       this.autoplay();
