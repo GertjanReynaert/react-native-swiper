@@ -259,6 +259,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
   loopJump = () => {
     if (!this.props.loop) return;
+
     const i = this.state.index + (this.props.loop ? 1 : 0);
 
     this.loopJumpTimer = setTimeout(() => {
