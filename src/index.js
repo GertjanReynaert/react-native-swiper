@@ -149,8 +149,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     onIndexChanged: () => {}
   };
 
-  state = this.getInitialState(this.props);
-
   initialRender: boolean;
   initialRender = true;
 
@@ -161,6 +159,22 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   loopJumpTimer = null;
 
   scrollView: ?React$ElementRef<ScrollView | ViewPagerAndroid>;
+
+  constructor(props: Props) {
+    super(props);
+
+    const { width, height } = Dimensions.get('window');
+    const total = this.getTotalSlides(props);
+
+    this.state = {
+      autoplayEnd: false,
+      offset: width * this.props.index,
+      index: total > 1 ? Math.min(this.props.index, total - 1) : 0,
+      width: this.props.width ? this.props.width : width,
+      height: this.props.height ? this.props.height : height,
+      isScrolling: false
+    };
+  }
 
   componentWillReceiveProps(nextProps: Props) {
     if (!nextProps.autoplay && this.autoplayTimer) {
@@ -187,22 +201,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     // If the index has changed, we notify the parent via the onIndexChanged callback
     if (this.state.index !== nextState.index)
       this.props.onIndexChanged(nextState.index);
-  }
-
-  // Ok
-  getInitialState(props: Props) {
-    const { width, height } = Dimensions.get('window');
-
-    const total = this.getTotalSlides(props);
-
-    return {
-      autoplayEnd: false,
-      offset: width * props.index,
-      index: total > 1 ? Math.min(props.index, total - 1) : 0,
-      width: props.width ? props.width : width,
-      height: props.height ? props.height : height,
-      isScrolling: false
-    };
   }
 
   syncStateWithProps(props: Props, updateIndex: boolean) {
