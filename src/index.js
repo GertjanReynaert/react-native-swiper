@@ -42,24 +42,14 @@ const styles = StyleSheet.create({
 
   pagination: {
     position: 'absolute',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent'
-  },
-
-  pagination_x: {
     bottom: 25,
     left: 0,
     right: 0,
-    flexDirection: 'row'
-  },
-
-  pagination_y: {
-    right: 15,
-    top: 0,
-    bottom: 0,
-    flexDirection: 'column'
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent'
   },
 
   title: {
@@ -90,17 +80,14 @@ const styles = StyleSheet.create({
 
 type State = {
   autoplayEnd: boolean,
-  offset: Object,
+  offset: number,
   index: number,
-  dir: 'x' | 'y',
   width: number,
   height: number,
   isScrolling: boolean
 };
 
 type Props = {
-  horizontal: boolean,
-
   children?: any, // Slides
   containerStyle?: StyleObj,
   contentContainerStyle?: StyleObj,
@@ -149,7 +136,6 @@ type Props = {
 
 export default class ReactNativeSwiper extends Component<Props, State> {
   static defaultProps = {
-    horizontal: true,
     showsPagination: true,
     showsButtons: false,
     disableNextButton: false,
@@ -210,26 +196,19 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     const state = {
       width: 0,
       height: 0,
-      offset: { x: 0, y: 0 },
+      offset: 0,
       ...(this.state || {})
     };
 
     const total = this.getTotalSlides(props);
 
-    // Default horizontal
-    const dir = props.horizontal === false ? 'y' : 'x';
-
     return {
       autoplayEnd: false,
-      offset: {
-        x: dir === 'x' ? width * props.index : 0,
-        y: dir === 'y' ? height * props.index : 0
-      },
+      offset: width * props.index,
       index:
         !updateIndex && state.index !== undefined
           ? state.index
           : total > 1 ? Math.min(props.index, total - 1) : 0,
-      dir,
       width: props.width
         ? props.width
         : this.state && this.state.width ? this.state.width : width,
@@ -246,26 +225,15 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
   onLayout = (event: Event) => {
     const { width, height } = event.nativeEvent.layout;
-    const { offset } = this.state;
     const newState = { width, height };
     const total = this.getTotalSlides(this.props);
 
-    if (total > 1) {
-      const setup = this.props.loop ? this.state.index + 1 : this.state.index;
+    const setup = this.props.loop ? this.state.index + 1 : this.state.index;
 
-      offset[this.state.dir] =
-        setup * (this.state.dir === 'x' ? width : height);
-    }
-
-    // only update the offset in state if needed, updating offset while swiping
-    // causes some bad jumping / stuttering
-    if (
-      !this.state.offset ||
-      width !== this.state.width ||
-      height !== this.state.height
-    ) {
-      newState.offset = offset;
-    }
+    const offset =
+      total > 1 && (width !== this.state.width || height !== this.state.height)
+        ? setup * width
+        : this.state.offset;
 
     // related to https://github.com/leecade/react-native-swiper/issues/570
     // contentOffset is not working in react 0.48.x so we need to use scrollTo
@@ -273,7 +241,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     if (Platform.OS === 'ios') {
       if (this.initialRender && total > 1) {
         if (this.scrollView) {
-          this.scrollView.scrollTo({ ...offset, animated: false });
+          this.scrollView.scrollTo({ x: offset, y: 0, animated: false });
         }
         this.initialRender = false;
       }
@@ -339,13 +307,10 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     this.setState({ isScrolling: false });
 
     const { contentOffset, position } = e.nativeEvent;
-    const { dir, width, height } = this.state;
+    const { width, height } = this.state;
 
     // making our events coming from android compatible to updateIndex logic
-    const offset =
-      contentOffset || dir === 'x'
-        ? { x: position * width }
-        : { y: position * height };
+    const offset = contentOffset.x || position * width;
 
     this.updateIndex(offset, () => {
       this.autoplay();
@@ -363,10 +328,9 @@ export default class ReactNativeSwiper extends Component<Props, State> {
    */
   onScrollEndDrag = (e: Event) => {
     const { contentOffset } = e.nativeEvent;
-    const { horizontal } = this.props;
     const { index, offset } = this.state;
-    const previousOffset = horizontal ? offset.x : offset.y;
-    const newOffset = horizontal ? contentOffset.x : contentOffset.y;
+    const previousOffset = offset;
+    const newOffset = contentOffset;
 
     if (
       previousOffset === newOffset &&
@@ -376,16 +340,15 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     }
   };
 
-  updateIndex = (offset: Object, cb: () => void) => {
-    const { dir } = this.state;
+  updateIndex = (offset: number, cb: () => void) => {
     let { index } = this.state;
-    const diff = offset[dir] - this.state.offset[dir];
+    const diff = offset - this.state.offset;
     const total = this.getTotalSlides(this.props);
 
     // Do nothing if offset no change.
     if (diff === 0) return;
 
-    const step = dir === 'x' ? this.state.width : this.state.height;
+    const step = this.state.width;
 
     // Note: if touch very very quickly and continuous,
     // the variation of `index` more than 1.
@@ -395,10 +358,10 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     if (this.props.loop) {
       if (index <= -1) {
         index = total - 1;
-        offset[dir] = step * total;
+        offset = step * total;
       } else if (index >= total) {
         index = 0;
-        offset[dir] = step;
+        offset = step;
       }
     }
 
@@ -414,9 +377,9 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       // Setting the offset to the same thing will not do anything,
       // so we increment it by 1 then immediately set it to what it should be,
       // after render.
-      if (offset[dir] === this.state.offset[dir]) {
-        newState.offset = { x: 0, y: 0 };
-        newState.offset[dir] = offset[dir] + 1;
+      if (offset === this.state.offset) {
+        newState.offset = offset + 1;
+
         this.setState(newState, () => {
           this.setState({ offset }, cb);
         });
@@ -430,11 +393,11 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     if (this.state.isScrolling || this.getTotalSlides(this.props) < 2) return;
 
     const { scrollView } = this;
-    const { dir, width, height } = this.state;
+    const { width, height } = this.state;
     const diff = (this.props.loop ? 1 : 0) + diffFromIndex + this.state.index;
 
-    const x = dir === 'x' ? diff * width : 0;
-    const y = dir === 'y' ? diff * height : 0;
+    const x = diff * width;
+    const y = 0;
 
     if (scrollView) {
       if (Platform.OS === 'ios') {
@@ -486,11 +449,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     return (
       <View
         pointerEvents="none"
-        style={[
-          styles.pagination,
-          this.state.dir === 'x' ? styles.pagination_x : styles.pagination_y,
-          this.props.paginationStyle
-        ]}
+        style={[styles.pagination, this.props.paginationStyle]}
       >
         {arrayWithLength(total).map(index => (
           <Dot key={index} active={index === this.state.index} />
@@ -637,7 +596,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
             styles.wrapperIOS,
             this.props.contentContainerStyle
           ]}
-          contentOffset={this.state.offset}
+          contentOffset={{ x: this.state.offset, y: 0 }}
           onScrollBeginDrag={this.onScrollBegin}
           onMomentumScrollEnd={this.onScrollEnd}
           onScrollEndDrag={this.onScrollEndDrag}
