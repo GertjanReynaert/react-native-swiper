@@ -346,28 +346,31 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     }
   };
 
-  updateIndex = (offset: number, cb: () => void) => {
-    let { index } = this.state;
+  getIndexForOffset = (offset: number) => {
+    const { index, width } = this.state;
     const diff = offset - this.state.offset;
     const total = this.getTotalSlides(this.props);
-
-    // Do nothing if offset no change.
-    if (diff === 0) return;
-
-    const step = this.state.width;
 
     // Note: if touch very very quickly and continuous,
     // the variation of `index` more than 1.
     // parseInt() ensures it's always an integer
-    index = parseInt(index + Math.round(diff / step));
+    return parseInt(index + Math.round(diff / width));
+  };
+
+  updateIndex = (offset: number, cb: () => void) => {
+    let index = this.getIndexForOffset(offset);
+
+    if (this.state.index === index) return;
+
+    const total = this.getTotalSlides(this.props);
 
     if (this.props.loop) {
       if (index <= -1) {
         index = total - 1;
-        offset = step * total;
+        offset = this.state.width * total;
       } else if (index >= total) {
         index = 0;
-        offset = step;
+        offset = this.state.width;
       }
     }
 
