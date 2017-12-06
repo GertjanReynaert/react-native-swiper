@@ -131,7 +131,8 @@ type State = {
   width: number,
   height: number,
   isScrolling: boolean,
-  autoplayEnd: boolean
+  autoplayEnd: boolean,
+  initialRender: boolean
 };
 
 export default class ReactNativeSwiper extends Component<Props, State> {
@@ -149,15 +150,8 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     onIndexChanged: () => {}
   };
 
-  initialRender: boolean;
-  initialRender = true;
-
   autoplayTimer: ?number;
-  autoplayTimer = null;
-
   loopJumpTimer: ?number;
-  loopJumpTimer = null;
-
   scrollView: ?React$ElementRef<ScrollView | ViewPagerAndroid>;
 
   constructor(props: Props) {
@@ -174,7 +168,8 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       index: total > 1 ? Math.min(this.props.index, total - 1) : 0,
       width: newWidth,
       height: this.props.height || height,
-      isScrolling: false
+      isScrolling: false,
+      initialRender: true
     };
   }
 
@@ -232,7 +227,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
 
   onLayout = (event: Event) => {
     const { width, height } = event.nativeEvent.layout;
-    const newState = { width, height };
     const total = this.getTotalSlides(this.props);
 
     const setup = this.props.loop ? this.state.index + 1 : this.state.index;
@@ -246,15 +240,18 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     // contentOffset is not working in react 0.48.x so we need to use scrollTo
     // to emulate offset.
     if (Platform.OS === 'ios') {
-      if (this.initialRender && total > 1) {
+      if (this.state.initialRender && total > 1) {
         if (this.scrollView) {
           this.scrollView.scrollTo({ x: offset, y: 0, animated: false });
         }
-        this.initialRender = false;
       }
     }
 
-    this.setState(newState);
+    this.setState({
+      width,
+      height,
+      initialRender: false
+    });
   };
 
   loopJump = () => {
