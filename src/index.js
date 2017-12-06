@@ -311,7 +311,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     // update scroll state
     this.setState({ isScrolling: false });
 
-    const { width, height } = this.state;
+    const { width } = this.state;
 
     const offset =
       Platform.OS === 'iOS'
@@ -349,7 +349,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   getIndexForOffset = (offset: number) => {
     const { index, width } = this.state;
     const diff = offset - this.state.offset;
-    const total = this.getTotalSlides(this.props);
 
     // Note: if touch very very quickly and continuous,
     // the variation of `index` more than 1.
@@ -401,20 +400,16 @@ export default class ReactNativeSwiper extends Component<Props, State> {
   scrollBy = (diffFromIndex: number, animated: boolean = true) => {
     if (this.state.isScrolling || this.getTotalSlides(this.props) < 2) return;
 
-    const { scrollView } = this;
-    const { width, height } = this.state;
+    const { width } = this.state;
     const diff = (this.props.loop ? 1 : 0) + diffFromIndex + this.state.index;
 
-    const x = diff * width;
-    const y = 0;
-
-    if (scrollView) {
+    if (this.scrollView) {
       if (Platform.OS === 'ios') {
-        scrollView.scrollTo({ x, y, animated });
+        this.scrollView.scrollTo({ x: diff * width, y: 0, animated });
       } else if (animated) {
-        scrollView.setPage(diff);
+        this.scrollView.setPage(diff);
       } else {
-        scrollView.setPageWithoutAnimation(diff);
+        this.scrollView.setPageWithoutAnimation(diff);
       }
     }
 
