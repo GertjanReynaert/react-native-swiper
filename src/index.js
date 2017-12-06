@@ -181,11 +181,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       clearTimeout(this.autoplayTimer);
     }
 
-    const shouldUpdateIndex =
-      this.props.index !== nextProps.index ||
-      this.getTotalSlides(this.props) !== this.getTotalSlides(nextProps);
-
-    this.setState(this.syncStateWithProps(nextProps, shouldUpdateIndex));
+    this.setState(oldState => this.syncStateWithProps(nextProps, oldState));
   }
 
   componentDidMount() {
@@ -203,15 +199,13 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       this.props.onIndexChanged(nextState.index);
   }
 
-  syncStateWithProps(props: Props, updateIndex: boolean) {
+  syncStateWithProps(props: Props, oldState: State) {
     const { width, height } = Dimensions.get('window');
     // set the current state
-    const state = {
-      width: 0,
-      height: 0,
-      offset: 0,
-      ...(this.state || {})
-    };
+
+    const indexChanged = this.props.index !== props.index;
+    const amountOfSlidesChanged =
+      this.getTotalSlides(this.props) !== this.getTotalSlides(props);
 
     const total = this.getTotalSlides(props);
 
@@ -219,15 +213,11 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       autoplayEnd: false,
       offset: width * props.index,
       index:
-        !updateIndex && state.index !== undefined
-          ? state.index
-          : total > 1 ? Math.min(props.index, total - 1) : 0,
-      width: props.width
-        ? props.width
-        : this.state && this.state.width ? this.state.width : width,
-      height: props.height
-        ? props.height
-        : this.state && this.state.height ? this.state.height : height,
+        indexChanged || amountOfSlidesChanged || oldState.index === undefined
+          ? total > 1 ? Math.min(props.index, total - 1) : 0
+          : oldState.index,
+      width: props.width || oldState.width || width,
+      height: props.height || oldState.height || height,
       isScrolling: false
     };
   }
