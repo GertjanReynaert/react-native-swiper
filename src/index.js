@@ -78,15 +78,6 @@ const styles = StyleSheet.create({
   }
 });
 
-type State = {
-  autoplayEnd: boolean,
-  offset: number,
-  index: number,
-  width: number,
-  height: number,
-  isScrolling: boolean
-};
-
 type Props = {
   children?: any, // Slides
   containerStyle?: StyleObj,
@@ -130,8 +121,17 @@ type Props = {
   renderPreviousButton?: ({ onPress: () => void }) => React$Element<any>,
 
   // Event handlers
-  onScrollBeginDrag?: (event: Event, state: State, swiper: any) => void,
-  onMomentumScrollEnd?: (event: Event, state: State, swiper: any) => void
+  onScrollBeginDrag?: (event: Event) => void,
+  onMomentumScrollEnd?: (event: Event) => void
+};
+
+type State = {
+  autoplayEnd: boolean,
+  offset: number,
+  index: number,
+  width: number,
+  height: number,
+  isScrolling: boolean
 };
 
 export default class ReactNativeSwiper extends Component<Props, State> {
@@ -298,7 +298,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     this.setState({ isScrolling: true });
 
     if (this.props.onScrollBeginDrag) {
-      this.props.onScrollBeginDrag(e, this.state, this);
+      this.props.onScrollBeginDrag(e);
     }
   };
 
@@ -317,7 +317,7 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       this.loopJump();
 
       if (this.props.onMomentumScrollEnd) {
-        this.props.onMomentumScrollEnd(e, this.state, this);
+        this.props.onMomentumScrollEnd(e);
       }
     });
   };
