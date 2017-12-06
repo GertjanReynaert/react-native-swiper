@@ -170,8 +170,8 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       autoplayEnd: false,
       offset: width * this.props.index,
       index: total > 1 ? Math.min(this.props.index, total - 1) : 0,
-      width: this.props.width ? this.props.width : width,
-      height: this.props.height ? this.props.height : height,
+      width: this.props.width || width,
+      height: this.props.height || height,
       isScrolling: false
     };
   }
@@ -182,21 +182,6 @@ export default class ReactNativeSwiper extends Component<Props, State> {
     }
 
     this.setState(oldState => this.syncStateWithProps(nextProps, oldState));
-  }
-
-  componentDidMount() {
-    this.autoplay();
-  }
-
-  componentWillUnmount() {
-    this.autoplayTimer && clearTimeout(this.autoplayTimer);
-    this.loopJumpTimer && clearTimeout(this.loopJumpTimer);
-  }
-
-  componentWillUpdate(nextProps: Props, nextState: State) {
-    // If the index has changed, we notify the parent via the onIndexChanged callback
-    if (this.state.index !== nextState.index)
-      this.props.onIndexChanged(nextState.index);
   }
 
   syncStateWithProps(props: Props, oldState: State) {
@@ -220,6 +205,21 @@ export default class ReactNativeSwiper extends Component<Props, State> {
       height: props.height || oldState.height || height,
       isScrolling: false
     };
+  }
+
+  componentDidMount() {
+    this.autoplay();
+  }
+
+  componentWillUnmount() {
+    this.autoplayTimer && clearTimeout(this.autoplayTimer);
+    this.loopJumpTimer && clearTimeout(this.loopJumpTimer);
+  }
+
+  componentWillUpdate(nextProps: Props, nextState: State) {
+    // If the index has changed, we notify the parent via the onIndexChanged callback
+    if (this.state.index !== nextState.index)
+      this.props.onIndexChanged(nextState.index);
   }
 
   getTotalSlides(props: Props) {
